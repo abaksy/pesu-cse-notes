@@ -1,0 +1,339 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage[margin=1in]{geometry}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition} % definition numbers are dependent on theorem numbers
+\newtheorem{exmp}{Example} % same for example numbers
+
+\title{Data Analytics (UE18CS312)\\
+\large Unit 2}
+\author{Aronya Baksy}
+\date{October 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Regression Analysis}
+\begin{itemize}
+    \item Regression is the task of finding the existence of an \textbf{association relationship} between a \textbf{dependent} variable (aka response or outcome variable, represented as $Y$) and an \textbf{independent} variable (aka explanatory or predictor variable, represented as $X$). 
+    
+    \item Regression does not say that the current value of $Y$ is dependent on the current value of $X$, or is \textbf{caused by} the current value of $X$.
+    
+    \item  Regression only aims to find that there is an \textit{association} between changes in $Y$ and changes in $X$. 
+    
+    \item Regression is a form of \textbf{supervised learning}, in that it requires knowledge of both dependent and independent variables in the dataset. 
+\end{itemize}
+
+\section{Simple Linear Regression}
+\begin{itemize}
+    \item In SLR, there is a \textit{linear relationship} between the dependent variable $Y$ and the regression coefficients $\beta_0$ and $\beta_1$. 
+
+    \item The simplest functional form of SLR model can be written as
+    
+    \begin{equation}
+        Y_i = \beta_0 + \beta_1 X_i + \varepsilon_i
+    \end{equation}
+    
+    Where\\
+    $Y_i$ is the value of the dependent variable for the $i^{th}$ observation in the data\\
+    $X_i$ is the value of the independent variable for the $i^{th}$ observation in the data\\
+    $\beta_0$ and $\beta_1$ are the regression coefficients\\
+    $\varepsilon_i$ is the error term or \textbf{residual} in prediction for the $i^{th}$ observation.
+    
+    \item \textbf{Note}: \\Models like $Y_i = \beta_0 + \beta_1 log(X_i) + \varepsilon_i$ and $Y_i = \beta_0 + \beta_1 X_i^2+ \varepsilon_i$ are also \textbf{linear models}.\\
+    But models like $Y_i = \beta_0 + \frac{1}{1 +\beta_1} X_i + \varepsilon_i$ and $Y_i = \beta_0 + e^{\beta_1} X_i + \varepsilon_i$ are \textbf{non-linear models}. 
+    
+    \item Determining the appropriate functional form is important to get a good fit with low error for the given data. 
+\end{itemize}
+
+\subsection{Parameter Estimation: OLS}
+\begin{itemize}
+    \item The \textbf{Ordinary Least Squares} method is used to estimate the regression parameters $\beta_0$ and $\beta_1$. 
+    
+    \item OLS provides the \textbf{Best Linear Unbiased Estimate} (BLUE) of the parameters. The condition for an estimate to be BLUE is:
+    \begin{equation*}
+        \mathbb{E}(\beta - \hat{\beta}) = 0
+    \end{equation*}
+    Where $\hat{\beta}$ is the estimated value of the parameter $\beta$.
+    
+    \item OLS is guaranteed to provide the best fit line under the following assumptions:
+    \begin{enumerate}
+        \item The model is linear wrt. the regression parameters $\beta_0$ and $\beta_1$
+        
+        \item The exploratory variable $X$ is deterministic, not stochastic
+        
+        \item The conditional expected value of all residuals is 0, ie. $\mathbb{E}(\varepsilon_i | X_i) = 0$
+        
+        \item For time series data, residuals are uncorrelated, ie. $Cov(\varepsilon_i, \varepsilon_j) = 0\text{ }\forall\text{ }i \ne j$
+        
+        \item The residuals $\varepsilon_i$ follow a normal distribution
+        
+        \item The variance of the residuals $\varepsilon_i$ does not depend on the value of $X_i$ and it is a constant value, in other words, $X$ is \textbf{homoscedastic}. 
+    \end{enumerate}
+    
+     \item The OLS estimate of the parameters $\beta_0$ and $\beta_1$ are:
+        \begin{align}
+            \hat{\beta}_0 &= \overline{Y} - \hat{\beta}_1 \overline{X}\\
+            \hat{\beta}_1 &= \frac{\sum\limits_{i=1}^{n} X_i (Y_i - \overline{Y})}{\sum\limits_{i=1}^{n} X_i (X_i - \overline{X})} 
+        \end{align}
+    
+    \item This BLUE is obtained by minimizing the sum of squared errors (SSE). 
+    
+    \item Sum of Squared Total variations (SST) is
+    \begin{equation*}
+        SST = \sum_{i=1}^{n} (Y_i - \overline{Y})^2
+    \end{equation*}
+    
+    \item Sum of Squared Errors (SSE) is 
+    \begin{equation*}
+        SSE = \sum_{i=1}^{n} (Y_i - \hat{Y})^2
+    \end{equation*}
+    
+    \item Sum of Squared error due to Regression (SSR) is 
+    \begin{equation}
+        SSR = \sum_{i=1}^{n} (\hat{Y_i} - \overline{Y})^2
+    \end{equation}
+    
+    \item Therefore
+    \begin{equation*}
+        SST = SSR + SSE
+    \end{equation*}
+    
+    \item And the \textbf{coefficient of determination}, $r^2$ is given as
+    \begin{equation}
+        r^2 = \frac{SSR}{SST} = \frac{\sum\limits_{i=1}^{n} (\hat{Y_i} - \overline{Y})^2}{\sum\limits_{i=1}^{n} (Y_i - \overline{Y})^2} = 1 - \frac{\sum\limits_{i=1}^{n} (Y_i - \hat{Y})^2}{\sum\limits_{i=1}^{n} (Y_i - \overline{Y})^2}
+    \end{equation}
+\end{itemize}
+
+\section{Hypothesis Tests for Regression Coefficients}
+\subsection{t-Test for Regression Coefficient}
+\begin{itemize}
+    \item \textbf{Null Hypothesis} $H_0$: There is no linear relationship between X and Y
+    
+    \item \textbf{Alternate Hypothesis} $H_1$: There is a linear relationship between X and Y
+    
+    \item The standard error for the estimate $\hat{\beta}_1$ is:
+    \begin{equation*}
+        S_e(\hat{\beta}_1) = \frac{\sqrt{\sum\limits_{i=1}^n (Y_i - \hat{Y}_i)^2 / (n-2)}}{\sum\limits_{i=1}^n (X_i - \overline{X})^2}
+    \end{equation*}
+    
+    \item The test statistic $t$ with degrees of freedom $n-2$ is then calculated as:
+    \begin{equation*}
+        t = \frac{\hat{\beta}_1}{S_e(\hat{\beta}_1)}
+    \end{equation*}
+\end{itemize}
+
+\subsection{F-test for overall model: ANOVA}
+\begin{itemize}
+    \item The f-score is given as
+    \begin{equation*}
+        f = \frac{SSR}{SSE/(n-2)} = \frac{R^2 (n-2)}{(1-R^2)}
+    \end{equation*}
+\end{itemize}
+
+\section{Outlier Analysis}
+The distance measures used in observing outliers are:
+\begin{itemize}
+    \item \textbf{Z-score}: given by
+    \begin{equation*}
+        z = \frac{\hat{Y}-\overline{Y}}{\sigma_Y}
+    \end{equation*}
+    
+    \item \textbf{Mahalanobis Distance}: Given by
+    \begin{equation*}
+        D_m = \sqrt{(x-\mu)^TS^{-1}(x-\mu)}
+    \end{equation*}
+    
+    \item \textbf{Minknowski Distance}: between $X = (x_1, x_2, ..., x_n)$ and $Y = (y_1, y_2, ..., y_n)$ is given by
+    \begin{equation*}
+        D(X, Y) = (\sum\limits_{i=1}^n |x_i - y_i|^p)^{\frac{1}{p}}
+    \end{equation*}
+    
+    For $p=1$ this is the \textbf{Manhattan Distance}, and for $p=2$ this is the \textbf{Euclidean Distance}. 
+\end{itemize}
+
+\section{Multiple Linear Regression}
+\begin{itemize}
+    \item The most basic functional form of an MLR model is given as
+    \begin{equation}
+        y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + ... + \beta_k x_{ki} + \varepsilon_i
+    \end{equation}
+    
+    \item Let $X$ be a matrix with the first column all 1s, and the next column being the values of the first feature $X_1$ and so on. Then the matrix form of MLR is 
+    \begin{equation}
+        Y = X \beta + \varepsilon
+    \end{equation}
+    
+    \item The OLS estimate of $\beta$ is then given by
+    
+    \begin{equation}
+        \hat{\beta} = (X^T X)^{-1} (X^T Y)
+    \end{equation}
+\end{itemize}
+
+\subsection{Auto-Correlation}
+\begin{itemize}
+    \item Auto correlation is the correlation between successive error terms in a time-series regression problem. Given a time series model
+    \begin{equation*}
+        Y_t = \beta_0 + \beta_1 x_t + \varepsilon_t
+    \end{equation*}
+    
+    \item If there is auto correlation, the standard error estimate of beta coefficient will be underestimated, which leads to a low $p$ value. Hence a variable that has no statistically significant relationship with the response variable $y$ may be accepted because of auto correlation. 
+    
+    \item Auto correlation can be tested using the \textbf{Durbin-Watson Test}
+\end{itemize}
+
+\subsection{Durbin-Watson's Test}
+\begin{itemize}
+    \item If $\rho$ be the correlation between the residual terms $\varepsilon_t$ and $\varepsilon_{t-1}$, then:
+    \begin{itemize}
+        \item \textbf{Null Hypothesis} $H_0$: $\rho = 0$
+        \item \textbf{Alternate Hypothesis} $H_1$: $\rho \ne 0$
+    \end{itemize}
+    
+    \item The test statistic $D$ is given as
+    \begin{equation*}
+        D = 2 \left (1 - \frac{\sum\limits_{i=2}^{n} e_i e_{i-1}}{\sum\limits_{i=1}^{n} e_i^2} \right )
+    \end{equation*}
+    
+    \item Given the upper and lower limits $D_U$ and $D_L$ on the test statistic $D$, we have
+    \begin{itemize}
+        \item If $D < D_L$ then errors are +vely autocorrelated
+        
+        \item If $D > D_L$ there is no evidence for +ve autocorrelation
+        
+        \item If $(4-D) < D_L$ then errors are -vely autocorrelated
+        
+        \item If $(4-D) > D_U$ then no evidence for -ve autocorrelation
+        
+        \item If $D_L < 4-D < D_U$ or $D_L < D < D_U$ then test is inconclusive
+    \end{itemize}
+\end{itemize}
+\subsection{DFFIT and DFBETA}
+\begin{itemize}
+    \item DFFIT and DFBETA are the values of the repsonse variable and beta coefficient when one observation $i$ is removed from the data. 
+    
+    \item DFFIT is given by
+    \begin{align*}
+        DFFIT &= \hat{Y}_i - \hat{Y_{i(i)}}\\
+        DFBETA_i(j) &= \hat{\beta}_j - \beta{Y_{j(i)}}
+    \end{align*}
+    
+    \item $DFBETA_i(j)$ represents the change in the coefficient of variable $X_j$ when observation $i$ is removed. 
+    
+    \item The standardized versions SDFFIT and SDFBETA are also used, standardized by the standard error $S_e(\hat{\beta_j})$
+\end{itemize}
+
+\subsection{Bias-Variance Tradeoff in MLR}
+\begin{itemize}
+    \item The \textbf{bias} is the difference between the actual population value of an estimator and its expected value. It measures the accuracy of the estimates.
+    \begin{equation}
+        Bias(\hat{\beta}) = \mathbb{E}(\hat{\beta}) - \beta
+    \end{equation}
+    
+    \item The \textbf{variance} measures the spread, or uncertainty, in these estimates.
+    \begin{equation}
+        Var(\hat{\beta}) =  \frac{E^{'}E}{n-m}
+    \end{equation}
+    where $E$ is the matrix of residuals given as $y - X\hat{\beta}$, $n$ is number of observations and $m$ is number of independent variables.
+    
+    \item The OLS estimator that is used for estimating regression coefficients is unbiased, but it can have high variance in the cases where there are lots of predictor variables ($X$), the predictors are highly correlated with one another, or when $n-m$ tends towards 0. 
+    
+    \item Solution to the above is to reduce variance at the penalty of introducing some bias. This is called \textbf{regularization}. 
+\end{itemize}
+
+\subsubsection{LASSO Regression}
+\begin{itemize}
+    \item Least Absolute Shrinkage and Selection. Uses L1 norm or the 'absolute value' of coefficients scaled by shrinkage.
+    
+    \item LASSO tends to zero out smaller (unimportant) coefficients (and helps with feature selection)
+    
+    \item With LASSO, the MLR objective function is now
+    \begin{equation}
+        \sum_{i=1}^{N} \left ( y_i - \beta_0 - \sum_{j = 1}^{m} \beta_j x_{ij} \right )^2 + \lambda \sum_{j=1}^{p} \left | \beta_j \right |
+    \end{equation}
+    
+    \item Disadvantages of LASSO:
+    \begin{enumerate}
+        \item In small-$n$-large-$m$ dataset the LASSO selects at most $n$ variables before it saturates.
+        
+        \item If there are grouped variables (highly correlated between each other) LASSO tends to select one variable from each group ignoring the others
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{Ridge Regression}
+\begin{itemize}
+    \item Uses L2 norm or the squared value of coefficients scaled by shrinkage. It is used when number of predictor variables in a set exceeds the number of observations, or when a data set has correlations between predictor variables. 
+    
+    \item We shrink the estimated association of each variable. 
+    
+    \item With LASSO, the MLR objective function is now
+    \begin{equation}
+        y = \sum_{i=1}^{N} \left ( y_i - \beta_0 - \sum_{j = 1}^{m} \beta_j x_{ij} \right )^2 + \lambda \sum_{j=1}^{p} \beta_j^2
+    \end{equation}
+    
+    \item Coefficients produced by OLS are scale invariant but that is not the case with Ridge Regression, so we must remember to scale the input
+\end{itemize}
+
+
+
+\section{Logistic Regression}
+\begin{itemize}
+    \item A binary logistic regression model is given as
+    \begin{equation*}
+        P(Y=1) = \frac{e^Z}{1+e^Z}
+    \end{equation*}
+    
+    Where
+    \begin{equation*}
+        Z = \beta_0  + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_k x_k
+    \end{equation*}
+    
+    \item The above equation can be transformed into
+    \begin{equation}
+        Z = ln \left( \frac{P(Y=1)}{1-P(Y=1)} \right)
+    \end{equation}
+    
+    \item The quantity $\frac{P(Y=1)}{1-P(Y=1)}$ is called the \textbf{odds}, and the natural logarithm of the odds is called the \textbf{log-odds}. 
+    
+    \item There is no closed form solution when OLS is used. Hence numerical methods like \textbf{gradient descent} are used to estimate the parameters of the Logistic Regression Model. 
+\end{itemize}
+
+\subsection{Contingency Table and Metrics}
+\begin{itemize}
+    \item A confusion matrix for a binary classification problem is as follows
+    
+    \begin{figure}[!ht]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        & Predicted True & Predicted False \\
+        \hline
+        Actual True &  TP & FN \\
+        \hline
+        Actual False & FP & TN \\
+        \hline
+    \end{tabular}
+    \end{figure}
+    
+    \item The following metrics are defined from these quantities:
+    \begin{align*}
+        Accuracy &= \frac{TP}{TP+TN+FP+FN}\\
+        Precision &= \frac{TP}{TP+FP}\\
+        Recall &= \frac{TP}{TP+FN} \text{ also known as sensitivity}\\
+        Specificity &= \frac{TN}{TN+FP}\\
+        F_1 &= \frac{2*Precision*Recall}{Precision + Recall}\\
+        J &= Specificity + Recall - 1
+    \end{align*}
+    
+    \item J is the \textbf{Youden's J Statistic}
+\end{itemize}
+\end{document}

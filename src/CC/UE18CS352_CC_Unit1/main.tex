@@ -1,0 +1,807 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, portrait, margin=1in]{geometry}
+\usepackage{tabularx}
+
+\title{Cloud Computing (UE18CS352) \\
+    Unit 1}
+\author{Aronya Baksy}
+\date{January 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction to Cloud Computing}
+\begin{itemize}
+    \item \textbf{Cloud Computing}: A model for enabling \textbf{ubiquitous}, convenient, \textbf{on-demand} network access to a\textbf{ shared pool of configurable computing resources} that can be \textbf{rapidly provisioned and released} with minimal management effort and minimal interaction with service providers. 
+    
+    \item Resources available on the cloud include networks, servers, storage, applications and services. 
+\end{itemize}
+
+\subsection{Characteristics of Cloud Infrastructure}
+\begin{itemize}
+    \item \textbf{On-demand Service}: Self or auto-provisioned resources in short time (may be compute, storage or platform) with no need to interact with IT personnel and wait for approval.
+    
+    \item \textbf{Broad Network Access}: Resources should be accessible from any platform (mobile or desktop device, running any OS). Most cloud service providers use the internet for this purpose. 
+    
+    \item \textbf{Resource Pooling}: Ability to share a single hardware resource between multiple clients. This allows more users to concurrently access the service. It is commonly achieved using Virtualization. 
+    
+    \item \textbf{Rapid Elasticity}: Easy and fast increase/decrease of the number of resources deployed,  based on the current load or other criteria. 
+    
+    \item \textbf{Measured Service}: Consumer pays only for the resources used by their application (eg: SalesForce charges proportionally with number of customers using the service). 
+\end{itemize}
+
+\section{Computing Paradigms}
+\begin{itemize}
+    \item \textbf{Centralized Computing}: All the compute resources (storage, memory, CPU etc.) are held in one central location, tightly coupled and shared among all clients. They are accessed from terminal machines (eg: some datacenters, supercomputers)
+    
+    \item \textbf{Parallel Computing}: Multiple processors are either tightly coupled (shared memory) or loosely coupled (distributed memory). Inter-Processor communication is done via shared memory or message passing. 
+    
+    \item\textbf{Distributed Computing}: Multiple autonomous compute nodes that each have their own private memory and communicate via a network. Message passing is used as the mechanism for this communication. 
+\end{itemize}
+
+\subsection{Grid Computing}
+\begin{itemize}
+    \item A grid is a system that \textbf{coordinates resources} that are not subject to central control, using \textbf{standard}, \textbf{general purpose} and \textbf{open protocols/interfaces }to deliver a \textbf{non-trival} quality of service. 
+    
+    \item Grids have the ability to handle heterogeneous infrastructure. Trust and security between resources pooled from different organizations on the grid is maintained using resource sharing agreements. 
+    
+    \item The end goal of grid computing is to allow computational power to be offered as an utility (like electricity). 
+    
+    \item The following are the benefits of grid computing
+    \begin{enumerate}
+        \item Exploit underutilized resources
+        
+        \item Load balancing between resources
+        
+        \item Virtualization of resources at an enterprise level, enable collaboration across VOs
+        
+        \item Creation of data grids for distributed storage or compute grids for distributed computing on multiple nodes. 
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{Virtual Organization}
+\begin{itemize}
+    \item A Virtual Organization (VO) forms the \textbf{basic unit} for enabling access to shared resources. 
+    
+    \item The key technical problem addressed by grid technologies is to enable resource sharing among mutually distrustful participants of a VO who may/may not have any prior relationship and enable them to solve a common task.
+\end{itemize}
+
+\subsubsection{Layered Architecture of Grid Computing}
+\begin{itemize}
+    \item \textbf{Application Layer}: Application running on the grid
+    
+    \item \textbf{Collective}: Implement a variety of sharing behaviours with directory, brokering, community authorization and accounting services, as well as collaborative services. 
+    
+    \item \textbf{Resource}: APIs for allocation of resources as well as secure, negotiation, monitoring, control, accounting and payment for operations on a single shared resource. 
+    
+    \item \textbf{Connectivity}: Protocols for inter-node communication and authentication of these communications. 
+    
+    \item \textbf{Fabric}: Provide physical resources (compute, storage, network resources, catalogs) or logical resources (distributed file system, compute cluster) whose access is mediated by the higher-level grid protocols.
+\end{itemize}
+
+\subsubsection{Gridware (Grid Middleware)}
+\begin{itemize}
+    \item A type of middleware that enables sharing and management of grid components based on user requirement as well as resource properties 
+    
+    \item Functionality of gridware:
+    \begin{enumerate}
+        \item Run applications on suitable resources (brokering, scheduling tasks)
+        
+        \item Provide uniform high level access to resources via semantic interfaces (Service Oriented Architecture, Web Service architecture)
+        
+        \item Address inter-domain security policies 
+        
+        \item Application level status monitoring and control
+        
+    \end{enumerate}
+    
+    \item Examples of gridware: Globus (U Chicago), Condor (U Wisconsin), Legion (U Virginia), IBP, NetSolve (for high-throughput and data-intensive scientific applications)
+\end{itemize}
+
+\subsection{Cluster Computing}
+\begin{itemize}
+    \item Set of loosely/tightly coupled compute nodes that can be viewed as a single system. 
+    
+    \item Most clusters consist of homogeneous nodes (each node has same configuration), within a small area, connected by a fast LAN. 
+    
+    \item Each node in a compute cluster is configured to execute the same task, scheduled and controlled by software. 
+    
+    \item One of the features of a cluster is the abiltiy to merge the multiple systems into a \textbf{Single System Image} (SSI). 
+    
+    \item An SSI is an illusion created by software or hardware that presents a collection of resources as one integrated, powerful resource. SSI is implemented as a middleware layer (in hardware/software) that presents CPU cores/IO devices/Disks as a single unit shared across all cluster nodes. 
+    
+    \item Middleware support is needed to implement SSI as well as high availability (HA) which consists of fault tolerance and recovery mechanisms.
+    
+    \item Instead of implementing SSI at many different levels, virtualization is used to create virtual clusters from smaller number of actual nodes. 
+\end{itemize}
+
+\subsection{HTC and HPC}
+\begin{itemize}
+    \item \textbf{High Performance Computing}: Usage of large compute resources for a relatively short period of time. Such jobs are typically run on a single system consisting of multiple processors that run tasks in parallel. 
+    
+    \item Performance of HPC systems is measured in FLOPS (Floating point operations per second).
+    
+    \item \textbf{High Throughput Computing}: Usage of large compute resources for a long period of time. It is defined as a computing paradigm that focuses on the efficient execution of a large number of loosely-coupled tasks
+    
+    \item Performance of HTC systems is measured in terms of number of jobs or operations completed per month or year. 
+\end{itemize}
+
+\subsection{Parallel Computing}
+\begin{itemize}
+    \item Computation paradigm wherein multiple tightly coupled processors execute smaller sub-tasks within a larger application program.
+    
+    \item These sub-tasks are \textit{independent of one another} and executed at the same time on different hardware units. 
+\end{itemize}
+
+\subsubsection{Types of Parallelism}
+\begin{itemize}
+    \item \textbf{Bit-level Parallelism}: Focus on increasing processor word size (eg: an 8-bit processor needs 3 cycles to add 2 16-bit numbers but a 16-bit processor takes one cycle). 
+    
+    \item \textbf{Instruction-level Parallelism}: Parallel execution of multiple instructions from a single program (eg: parallel loops like vector addition can be converted from loop to parallel instruction).
+    
+    \item \textbf{Task-level or Thread-level Parallelism}: Independent threads of execution (performing different tasks) that run on separate processing cores. 
+    
+    \item \textbf{Data Parallelism}: Input data is split into batches, and all batches are processed in parallel. The exact same instructions are applied to each batch of the data. 
+\end{itemize}
+
+\subsubsection{Technique and Solutions in Parallel Computing}
+\begin{itemize}
+    \item \textbf{Application Checkpointing}: Record current state of all components in the system so that it can be restarted and restored from that point in time 
+    
+    \item \textbf{Automatic Parallelization}: Automatic conversion of serial code to multi-threaded code that can be used on an SMP machine (Shared Memory multi-Processor)
+    
+    \item \textbf{Parallel Programming Languages}: Classified as either using distributed memory (threads use message passing to communicate) or using shared memory (threads use variables in shared memory to communicate)
+\end{itemize}
+
+\begin{tabular}{|l|l|}
+    \hline
+    \textbf{Parallel Computing} & \textbf{Distributed Computing}  \\
+    \hline
+    Use of single compute node & Multiple compute nodes \\
+    \hline
+    Tasks run on multiple cores on a single chip & Tasks run on a network of computers\\
+    \hline
+    Shared or distributed memory & Distributed memory only \\
+    \hline
+    Processors communicate through a bus & Processors communicate via message passing \\
+    \hline
+    Improve system performance & Improve scalability, \\&fault tolerance, resource sharing \\
+    \hline 
+\end{tabular}
+
+
+\section{Cloud Computing Models}
+
+\subsection{Enabling technologies}
+\begin{itemize}
+    \item Broadband networks, internet architecture, web technologies (URLs, HTTP, XML/HTML)
+    
+    \item Multi-tenant technology: single instance of software running on a server and serving multiple clients
+    
+    \item Data center technology
+    
+    \item Virtualization technology
+\end{itemize}
+
+\subsection{Cloud Service Models}
+
+\subsubsection{Infrastructure as a Service (IaaS)}
+\begin{itemize}
+    \item \textit{Definition}: Capability given to the user to provision processing, storage, network and other fundamental computing resources where the consumer is able to deploy and run any arbitrary software platform (can include OSes, application). The consumer has no direct control over the cloud infrastructure but has control over OS, storage, deployed applications and select control over networking components like firewalls.
+    
+    \item Provision of compute and storage resources as a service. Physical resources are abstracted into virtual containers and presented to the user. 
+    
+    \item These virtual resources are allocated on demand to the user, and configured by the user to run any software applications. 
+    
+    \item IaaS has the greatest flexibility but the least application automation from the standpoint of the user. It allows the user to have complete control over the software stack that they run.
+    
+    \item Building blocks of IaaS are:
+    \begin{itemize}
+        \item Physical data centers (large collections of server racks with multiple physical machines inside each rack), managed by IaaS providers.
+        
+        \item Compute: the ability to provision VM instances with CPU/GPU configs depending on workload. Also provided are auto-scaling and load balancing services
+        
+        \item Networking: software abstraction of network devices like switches/routers, available typically through APIs.
+        
+        \item Storage: either block, file or object storage. Block and file storage are the same as found on traditional data centers, but struggle with scaling, performance and the distributed nature of the cloud. Object storage on the other hand is infinitely scalable, accessible via HTTP, works well with distributed systems like the cloud, uses commodity hardware and allows linear growth of performance wrt cluster size.
+    \end{itemize}
+    
+    \item Advantages of IaaS:
+    \begin{itemize}
+        \item Flexible
+        
+        \item Control
+        
+        \item Pay-as-you-go
+        
+        \item Faster deployment
+        
+        \item High availability
+    \end{itemize}
+    
+    \item Disadvantages of IaaS:
+    \begin{itemize}
+        \item Security threats sourced from host or other VMs. 
+        
+        \item Multi-tenant Security, new VM users must not be able to access data left behind by previous users.
+        
+        \item Internal resources and training, ie. the need to train IT managers in the use of IaaS management.
+    \end{itemize}
+    
+    \item IaaS providers: Google Compute Engine, AWS Elastic Compute Cloud (EC2), MS Azure VMs, DigitalOcean Droplets
+\end{itemize}
+
+\subsubsection{Platform as a Service (PaaS)}
+\begin{itemize}
+    \item \textit{Definition}: Capability given to the user to deploy consumer-created or acquired applications created using programming languages or tools supported by the provider. The consumer does not manage OS, storage, networking or compute infrastructure, but controls the deployed applications and maybe the hosting environment. 
+    
+    \item Physical hardware and virtualization of the same is controlled by the provider. The provider, in addition to this, also delivers some selected middleware (like a database software). 
+    
+    \item The user can configure and build applications on top of this middleware (eg: create a new database and build applications that use this new database). 
+    
+    \item PaaS is well suited to users who use commonly available middleware that is also supported by a cloud provider. 
+    
+    \item Advantages of PaaS:
+    \begin{itemize}
+        \item Faster time to market due to reduced setup and install time for hardware
+        
+        \item Faster, easier, risk-free adoption of a large variety of resources (in terms of middleware, OS, databases, libraries and components)
+        
+        \item Easy to develop for multiple platforms (including mobile)
+        
+        \item Cost effective scalability
+        
+        \item Allows for geographically distributed teams, and effective product life-cycle management (build, test, deploy, manage, update)
+    \end{itemize}
+    
+    \item Disadvantages of PaaS:
+    \begin{itemize}
+        \item Operational limitations (lack of control) due to management automation workflows (available on some PaaS providers) that affect provision, management and operation of PaaS systems
+        
+        \item Vendor lock-in
+        
+        \item Runtime issues: specific versions of frameworks may not work with the platform, or platform may not be optimized for the frameworks/language used
+        
+        \item Security: limited control over hosting policies, risks with storing data on cloud servers
+        
+        \item Integration and customization with legacy services (like data residing on an existing data center) is more complicated and outweighs the cost saving involved in switching to PaaS.
+    \end{itemize}
+    
+    \item PaaS providers: AWS Elastic Beanstalk, Azure DevOps, Google App Engine
+\end{itemize}
+
+\subsubsection{Software as a Service (SaaS)}
+\begin{itemize}
+    \item \textit{Definition}: Capability given to the user to use the applications provided by the provider. The user accesses this application through a thin client such as a web browser on their local machine. The user does not manage the underlying cloud infrastructure (OS, network, servers, storage) or even the application capabilities directly, but instead only changes the application specific settings. 
+    
+    \item SaaS is a no-programming model (very limited scripting/programming abilities can be provided in order to change app configuration for advanced users). 
+    
+    \item Advantages of SaaS:
+    \begin{itemize}
+        \item Flexible payment scheme, pay-as-you-go model
+        
+        \item High vertical scalability
+        
+        \item Automatic update of software
+        
+        \item Accessibility over the internet
+    \end{itemize}
+    
+    \item Disadvantages of SaaS:
+    \begin{itemize}
+        \item Security of data on cloud servers
+        
+        \item Greater latency in interaction with app, as compared to local deployment
+        
+        \item Total dependency on internet
+        
+        \item Vendor lock-in
+    \end{itemize}
+\end{itemize}
+
+\section{Technological Challenges in Cloud Computing}
+\begin{itemize}
+    \item \textbf{Elasticity} (Scalability): Resource allocation and workload scheduling algorithms are needed to be able to scale up and down effectively. 
+    
+    \item \textbf{Performance Unpredictability}: Ensuring reliability when resource sharing is involved
+    
+    \item \textbf{Compliance}: with privacy rules, ensure security of information stored on cloud. (in India, the SEBI's Clause 49 lays down these rules). 
+    
+    \item \textbf{Multi-Tenancy}: Sharing of same virtual resource by multiple users can cause concurrency issues which lead to security problems (hence appropriate locking mechanisms are needed). 
+    
+    \item \textbf{Interoperability}: Application on one platform should be able to incorporate services found on another platform. This is now possible via web services, which however are complex to develop.
+    
+    \item \textbf{Portability}: Application should migrate seamlessly from one cloud provider to another without change in design/programming.
+    
+    \item \textbf{Availability}: Reliability that is needed for high availability of cloud resources is hard to achieve due to cascading failures (one failure causes other failures in turn, and so on). This high level of availability is achieved using redundancy at the application, middleware or hardware level.
+\end{itemize}
+
+\subsection{High Availability in Cloud}
+\begin{itemize}
+    \item Cloud uses \textbf{failure detection} and \textbf{application recovery} to ensure high availability.
+    
+    \item \textbf{Failure detection}: cloud detects failed instances/components and avoids directing requests to such instances/components. This is achieved using
+    \begin{enumerate}
+        \item \textbf{Heartbeats}: Each instance/application sends a heartbeat signal periodically to a monitoring service in the cloud. If the monitoring service doesn't receive a specific number of consecutive heartbeats from an instance then that instance can be declared as failed.
+        
+        \item \textbf{Probing}: The monitoring service sends a probe to the application instance and waits for a response from the instance. If the instance does not respond to a fixed number of consecutive probes then it can be declared as failed. 
+    \end{enumerate}
+    
+    \item Setting a low threshold for number of missed heartbeats/probes can lead to \textit{faster} failure detection but can also lead to \textit{false positives}. Hence there is a trade-off between speed and accuracy of failure detection
+    
+    \item After identifying failed instances, it is necessary to avoid routing new requests to these instances. A common mechanism used for this in HTTP-based protocols is HTTP-redirection.
+    
+    \item \textbf{Application Recovery}: Most commonly achieved using \textbf{checkpointing}.
+    
+    \item In check-pointing, the application state is periodically saved in some backing store by the cloud infrastructure. In case the application fails, it can be restarted from the most recent checkpoint. 
+    
+    \item Checkpointing is also available at the middleware level (eg: Docker). 
+\end{itemize}
+
+\section{Cloud Deployment Models}
+\subsection{Public Cloud}
+\begin{itemize}
+    \item The infrastructure is owned by a cloud provider, an entity (individual or company) pays the provider for access to this infrastructure. 
+    
+    \item Resources are virtualized into pools and these pools are allocated among multiple clients that are using the cloud provider's infrastructure (multi-tenancy). 
+    
+    \item Access to these resources is done using internet and its associated protocols (SSH, FTP etc).
+    
+    \item The factors that make a particular cloud infrastructure public are: resource sharing using virtualization, usage agreements on resources (pay-as-you-go may or may not be present), and management (provider maintains hardware, networking and virtualization at the minimum)
+\end{itemize}
+
+\subsubsection{Advantages}
+\begin{itemize}
+    \item Low cost
+    
+    \item Less need for server management
+    
+    \item Time saving
+    
+    \item Analytics
+    
+    \item Unlimited scalability, greater redundancy and availability of resources
+\end{itemize}
+
+\subsubsection{Disadvantages}
+\begin{itemize}
+    \item Security
+    
+    \item Compliance with security standards and government rules on data security
+    
+    \item Interoperability and vendor lock-in
+\end{itemize}
+
+\subsection{Private Cloud}
+\begin{itemize}
+    \item Utilizing in-house infrastructure to host cloud services for a single organization
+    
+    \item Can utilize hardware at a local site owned by the organization, or can be a \textbf{Virtual Private Cloud} (VPC).
+    
+    \item In a VPC the hardware, networking and virtualization infrastructure is hosted by a third party but with additional security and provisioned config for a secure and exclusive network
+\end{itemize}
+
+\subsubsection{Advantages}
+\begin{itemize}
+    \item More control over resources and hardware
+    
+    \item Security and compliance due to additional layers of security
+    
+    \item Customization, the ability to have custom configurations to run proprietary applications
+\end{itemize}
+
+\subsubsection{Disadvantages}
+\begin{itemize}
+    \item Cost
+    
+    \item Under-utilization of resources
+    
+    \item Platform scaling, upward changes in requirements need scaling of physical infrastructure as against simple scaling of virtual instances on a hosted cloud
+\end{itemize}
+
+\subsection{Hybrid Cloud}
+\begin{itemize}
+    \item A mix of data centers maintained by the organization and hosted cloud infrastructure, connected by a VPN
+    
+    \item A hybrid cloud model allows enterprises to deploy workloads in private IT environments or public clouds and move between them as computing needs and costs change
+    
+    \item This gives a business greater flexibility and more data deployment options. A hybrid cloud workload includes the network, hosting and web service features of an application.
+\end{itemize}
+
+\section{Distributed System Architecture}
+\begin{itemize}
+    \item Three main types of models: architectural models, interaction models, fault models
+\end{itemize}
+\subsection{Architectural Models}
+\subsubsection{Cluster Architecture}
+\begin{itemize}
+    \item Building of scalable clusters by connecting smaller clsuters using networks (LAN, WAN, SAN for storage devices). The cluster may be connected to the internet via a VPN. 
+    
+    \item The OS and its resource sharing/scheduling policies determine the system image of the cluster
+\end{itemize}
+
+\subsubsection{Peer-to-peer Architecture}
+\begin{itemize}
+    \item Every node acts as both client and server, and all nodes are identical in terms of resources and capabilities.
+    
+    \item NO central coordination or database, no global view of the entire system for one machine, and hence no parent-child relationship between nodes. 
+    
+    \item P2P systems are self organizing, and peers can join/leave autonomously.
+    
+    \item Distribution of compute and networking workloads among many links and nodes, thus P2P model is the most flexible and general model.
+\end{itemize}
+
+\subsubsection{Client-Server Architecture}
+\begin{itemize}
+    \item Processes running on server nodes offer service to user requests coming from client nodes. 
+    
+    \item Client-server model is implemented as a request-response interaction using send/receive primitives or using Remote Procedure Calls (RPCs). 
+\end{itemize}
+
+\subsubsection{n-Tier Architecture}
+\begin{itemize}
+    \item Web applications that forward requests to other enterprise services. 
+    
+    \item Specific case is the 3-tier model where client intelligence is moved to a middle tier to enable the use of stateless clients. This simplifies app deployment.
+\end{itemize}
+
+\subsubsection{Grid Computing}
+\begin{itemize}
+    \item - A computing grid offers an infrastructure that couples computers, software/middleware, special instruments, and people and sensors together. 
+    
+    \item The grid is often constructed across LAN, WAN, or Internet backbone networks at a regional, national, or global scale. 
+    
+    \item Enterprises or organizations present grids as integrated computing resources. They can also be viewed as virtual platforms to support virtual organizations. 
+\end{itemize}
+
+\subsection{Interaction Models}
+\subsubsection{Synchronous Distributed System}
+\begin{itemize}
+    \item All the components of the distributed system run on a common clock. The features of a synchronous distributed system are:
+    \begin{enumerate}
+        \item Upper bound on message delivery time between processes or between nodes
+        
+        \item Message delivery is always in order
+        
+        \item Ordering of events happens at a global scale due to a shared clock
+        
+        \item Lock-step based execution, meaning that similar operations performed by different nodes in parallel complete at the same time, not at different times.
+    \end{enumerate}
+    
+    \item These systems are predictable in terms of timing behaviour, hence must be used for hard real-time systems. 
+    
+    \item It is possible, and safe to use timeouts to detect application or communication errors
+\end{itemize}
+
+\subsubsection{Asynchronous Distributed Systems}
+\begin{itemize}
+    \item There is no shared clock in such a system, each node maintains its own clock. The following are the properties of asynchronous systems
+    \begin{enumerate}
+        \item No bound on process execution time, and no assumptions about speed, reliability of individual nodes. 
+        
+        \item No upper bound on message delivery time
+        
+        \item Clock rates between different nodes may change due to the phenomenon of \textit{clock drift}. 
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Fault Models}
+\begin{itemize}
+    \item Definition of behaviours to be undertaken upon the occurrence of a fault. 
+    
+    \item Faults can be in both hardware and software, and fault tolerance (ie. predictable behaviour in case of a fault) is essential. 
+    
+    \item The following are the types of faults
+\end{itemize}
+\subsubsection{Omission and Arbitrary failures}
+\begin{itemize}
+    \item Fail-stop: Process halts, remains halted. Can be detected by outside applications
+    
+    \item Crash:  Process halts, remains halted. May not be detected by outside applications
+    
+    \item Omission: Message inserted in outgoing buffer never enters the incoming buffer of the other end
+    
+    \item Send-omission: Process completes send but message never reaches outgoing buffer
+    
+    \item Receive-omission: Process does not receive a message put in its incoming buffer
+    
+    \item Arbitrary (Byzantine): Arbitrary behaviour wrt message send/receive actions, or omissions, or stopping/incorrect actions. 
+\end{itemize}
+
+\subsubsection{Timing Faults}
+\begin{itemize}
+    \item Clock drift from real time exceeds threshold acceptable.
+    
+    \item Process exceeds bounds on task completion time or message transmission time
+\end{itemize}
+
+\section{Business Drivers for Cloud Computing}
+\begin{itemize}
+    \item \textit{Cost}: Low upfront cost of hardware, reduced investment in future scalability, reduces costs of resource under-utilization, and reduced management costs
+    
+    \item \textit{Assurance}: Delegation of management responsibility to a cloud provider reduces need for skilled IT admins and departments, while still maintaining high standards of security and availability. 
+    
+    \item \textit{Agility}: Faster response to customer requests for new services, due to faster deployment of new services on the cloud. Also changing business requirements can be better handled
+    
+    \item \textit{Flexibility and Scalability}: Easy to expand resources to meet increased workload
+    
+    \item \textit{Efficiency and improved customer experience}: cloud computing allows streamlined enterprise workflows which result in better workplace productivity, and hence faster biz growth
+\end{itemize}
+
+\section{REST and Web Services}
+
+\subsection{Service Oriented Architecture}
+\begin{itemize}
+    \item A method to develop reusable software components using service interfaces. 
+    
+    \item The use of common communication standards is done for easy integration with existing services (standard network protocols like HTTP/JSON, HTTP/SOAP are used to send requests for various operations)
+    
+    \item Each service in an SOA embodies the code and data integrations required to execute a complete, discrete business function. Services are loosely coupled, meaning that no underlying knowledge of the service implementation is needed to use it. 
+    
+    \item Two common SOAs are \textbf{REST} and \textbf{Web Services}
+\end{itemize}
+
+\subsection{REST}
+\begin{itemize}
+    \item REpresentational State Transfer (REST) is an architectural style for distributed systems, used for providing communication standards between APIs over the internet
+    
+    \item REST-compliant systems (aka RESTful systems) are characterized by their stateless behaviour and the separation of concerns between server and client. 
+    
+    \item A \textbf{safe} REST operation is one that does not modify any data
+    
+    \item An \textbf{idempotent} REST operation is one that does not change the state when applied multiple times beyond the first time.
+    
+    \item REST architectural style is based on:
+    \begin{enumerate}
+        \item \textbf{Resource identification through URIs}: A resource is a target of interaction between a service and its clients. Every resource is identified by a global identifier called an URI. The existence of a globally unique URI provides global interaction as well as service discovery capability. 
+        
+        \item \textbf{Uniform, constrained interface}: The REST interface consists of 4 basic operations
+        \begin{itemize}
+            \item GET: Retrieve a resource (S, I)
+            \item PUT: Add a resource (update if already exist) (not S, I)
+            \item POST: Create a new resource (make duplicate if already exist) (not S, not I)
+            \item DELETE: Remove a resource (not S, I)
+        \end{itemize}
+        
+        \item \textbf{Self-descriptive messages}: Messages contain metadata (how to process and other information about the data). In REST paradigm, resources are decoupled from their representations, hence data can be represented in multiple forms as per the client's understanding. Metadata is used for \textbf{cache control}, \textbf{transmission error detection}, \textbf{authentication or authorization}, and \textbf{access control}.
+        
+        \item \textbf{Stateless Interaction}: Server and client need not maintain each other's state, and a message can be understood without referring to any past messages (all messages are independent). Statelessness has the benefits of:
+        \begin{itemize}
+            \item Client is isolated against changes on the server
+            
+            \item Promotes redundancy and improves performance due to reduced synchronization overheads
+        \end{itemize}
+        State is normally maintained (only if needed) through compact and lightweight text objects called cookies. 
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Web Services}
+\begin{itemize}
+    \item A self contained, self describing modular application designed to be accessible by other applications across the internet.
+    
+    \item Web services are designed to support interoperable machine-to-machine communication over the internet. Other applications and web services can discover and invoke a web service and then communicate with it. 
+\end{itemize}
+
+\subsubsection{Protocol Stack for Web Services}
+\begin{itemize}
+    \item \textbf{Transport Protocol}: transport messages b/w applications over a network (HTTP, SMTP, FTP, Blocks Extensible Exchange Protocol or BEEP)
+    
+    \item \textbf{Messaging Protocol}: Encoding information in a common XML format for understanding at both end-points of the communication (eg: XML-RPC, WS-Addressing, SOAP)
+    
+    \item \textbf{Description Protocol}: Public interface description for a web service (WSDL)
+    
+    \item \textbf{Discovery Protocol}: Centralized registry for web services to publish their location and description, as well as for clients to discover available services (UDDI not yet widey adopted)
+\end{itemize}
+\subsubsection{SOAP}
+\begin{itemize}
+    \item Simple Object Access Protocol (SOAP) provides a standard packaging structure for transmission of XML documents over HTTP, SMTP or FTP. It allows interoperability between different middleware systems.
+    
+    \item Root element of SOAP message is called the \textbf{envelope}, which contains a:
+    \begin{enumerate}
+        \item \textit{Header}: Authentication credentials, and routing info/transaction management/message parsing instructions
+        
+        \item \textit{Body}: payload of the message
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{WSDL}
+\begin{itemize}
+    \item Web Services Description Language gives description of interface for web services (in terms of possible operations)
+    
+    \item Standardized representation of input, output parameters, protocol bindings.
+    
+    \item Allows heterogeneous clients to communicate with the web service in a standardized manner
+\end{itemize}
+
+\subsubsection{UDDI}
+\begin{itemize}
+    \item Uniform Description, Discovery and Integration standard, a global registry for advertising and discovery of web services
+    
+    \item Search by name, ID, category or specification implemented
+\end{itemize}
+
+\section{Models for inter-process communication}
+\begin{itemize}
+    \item Interaction between processes can be classified along two dimensions:
+    \begin{itemize}
+        \item First dimension: one-to-one vs one-to-many
+        
+        \item Second dimension: asynchronous vs synchronous
+    \end{itemize}
+    
+    \item The following are the types of one-to-one interaction:
+    \begin{itemize}
+        \item Synchronous request/response: The client send a message and blocks while waiting for the reply from the service. This style results from tightly coupled service and client interaction.
+        
+        \item Asynchronous request/response: Client sends a message and the service responds to this message asynchronously. The client does not block while waiting as there is no guarantee of the service sending the reply within some constrained time interval
+        
+        \item One-way notification: Service client sends a request to a service but no reply is expected
+    \end{itemize}
+    
+    \item The following are the types of one-to-many interaction:
+    \begin{itemize}
+        \item Pub-sub: A client publishes a message which is consumed by 0 or more interested services
+        
+        \item Publish/async response: A client publishes a request message and then waits for a certain amount of time for responses from interested services
+    \end{itemize}
+    
+    \item Advantages of asynchronous messaging:
+    \begin{itemize}
+        \item Reduced coupling
+        
+        \item Multiple subscribers
+        
+        \item Failure isolation: If consumer fails then sender can still send messages and consumer can read them once it is up again. In a synchronous service the downstream client must always be operational 
+        
+        \item Load leveling: A queue can act as a buffer to level the workload, so that receivers can process messages at their own rate
+    \end{itemize}
+    
+    \item Disadvantages of asynchronous messaging:
+    \begin{itemize}
+        \item Tight integration with messaging infrastructure
+        
+        \item High latency in case of high load (message queue overflows)
+        
+        \item Handling complex scenarios like duplicate messages, and coordinating request-response pairs
+        
+        \item Throughput reduction caused by enqueue and dequeue operations as well as locking mechanisms within a queue. 
+    \end{itemize}
+\end{itemize}
+\subsection{Message Queue}
+\begin{itemize}
+    \item A form of asynchronous communication used in serverless and microservice architectures. A message queue provides a lightweight buffer which temporarily stores messages, and endpoints for software components to connect to (to be able to send/recv messages).
+    
+    \item A message is pushed into the queue and stays there until it is processed and deleted.
+    
+    \item Message queues can be used to decouple heavyweight processing, to buffer or batch work, and to smooth spiky workloads.
+    
+    \item Producer adds messages to the queue, Consumer reads messages from the queue and processes them. 
+    
+    \item A single queue can be used by multiple producer-consumer pairs but only one consumer can read a message. Hence this model is used for point-to-point communication. 
+\end{itemize}
+
+\subsection{Pub-Sub Model}
+\begin{itemize}
+    \item The following are the components of a pub-sub communication model:
+    \begin{itemize}
+        \item \textbf{Topic}: intermediary channel that maintains a list of subscribers to send a message 
+        
+        \item \textbf{Message}: Serialized messages sent by a topic by publishers
+        
+        \item \textbf{Publishers}: Service that publishes the messages
+        
+        \item \textbf{Subscribers}: A service that subscribes to a topic in order to receive messages published on that topic
+    \end{itemize}
+    
+    \item Advantages of pub-sub model:
+    \begin{itemize}
+        \item Loose coupling as publishers and subscribers are not aware of one another and are independent of each other's failures. Hence independent scaling of subscribers and publishers is also allowed.
+        
+        \item Scalability due to parallel operations, message caching, tree-based routing, and multiple other features built into the pub/sub model
+        
+        \item Allow instantaneous push-based delivery hence removing the need for polling, hence causing faster response time and reduces delivery latency
+        
+        \item Dynamic targeting as subscribers can dynamically add and remove themselves from a topic, and the topic server can adjust to changing numbers of subscribers.
+        
+        \item Fewer callbacks and simpler code for communication makes it easier to maintain and extend.
+    \end{itemize}
+\end{itemize}
+
+\subsection{REDIS}
+\begin{itemize}
+    \item Remote Dictionary Server, a fast, open-source, in-memory key-value data store 
+    
+    \item It can be used as a database, a message-broker or a queue.
+    
+    \item In-memory storage allows for reduced seek time and allows microsecond delays in data access. 
+\end{itemize}
+
+\section{Monolithic and Micro-Services Applications}
+\begin{itemize}
+    \item Monolithic applications are built as a single unit, deployed on a single machine, and consists of a client-side application, a server-side application and a database.
+    
+    \item Microservice applications divide each component of the application into independent units that implement different parts of the business logic. 
+    
+    \item Advantages of monolithic application:
+    \begin{itemize}
+        \item Easy to develop 
+        
+        \item Simple testing and simple test automation 
+        
+        \item Easy to deploy 
+    \end{itemize}
+    
+    \item Advantages of microservice applications:
+    \begin{itemize}
+        \item Flexibility in adopting new technologies, maintaining smaller code bases.
+        
+        \item Reliability, as one service failing doesn't affect the remaining ones. 
+        
+        \item Fast development due to reduced code base size, hence also easier to improve code quality.
+        
+        \item Building complex applications is easier once the boundaries for components are decided, each can be developed independently and in parallel.
+        
+        \item Highly scalable
+        
+        \item Continuous deployment, meaning that microservice components can be independently updated without affecting the rest of the software
+    \end{itemize}
+\end{itemize}
+
+\subsection{Service Oriented Architecture}
+\begin{itemize}
+    \item SOA breaks up the components required for applications into separate service modules that communicate with one another to meet specific business objectives.
+    
+    \item  Microservice architecture is generally considered an evolution of SOA as its services are more fine-grained, and function independently of each other 
+\end{itemize}
+
+\subsection{Migration from monolithic to microservice model}
+\begin{itemize}
+    \item Some architectural challenges involved in this migration are:
+    \begin{itemize}
+        \item Decomposition of monolithic software into independent components
+        
+        \item Database decomposition in a consistent manner
+        
+        \item Transaction boundaries
+        
+        \item Performance and testing
+        
+        \item Inter-service communication
+    \end{itemize}
+\end{itemize}
+\subsubsection{Service Decomposition}
+\begin{itemize}
+    \item Don't add new features, start with existing loosely coupled components and identify those components which are ripe for enhancement
+    
+    \item Service decomposition leads to management and infrastructure overheads which can be resolved using containerization technologies to simplify deployment and configuration vastly
+\end{itemize}
+
+\subsubsection{Database decomposition}
+\begin{itemize}
+    \item In a monolithic application, modules access data belonging to other modules using table joins. In a microservice application this can be avoided by using APIs to access data, or using projection/replication of data.
+    
+    \item Shared database tables, as well as current state information that are used by multiple components of a monolithic application can be modelled as a separate independent service
+\end{itemize}
+
+\subsubsection{Transaction Boundaries}
+\begin{itemize}
+    \item ACID properties of a single database are easier to maintain than that of distributed databases in a microservice application. 
+    
+    \item In a 2-phase commit, the controlling node first asks all the participating nodes whether they are ready to transact. Only if all nodes respond with a yes, then the controller asks them to commit. If a single node responds with no, then all nodes are made to roll back the transaction
+    
+    \item In a compensating or Saga transaction, each service performs its own transaction and publishes an event. The other services listen to that event and perform the next local transaction. If one transaction fails for some reason, then the saga also executes compensating transactions to undo the impact of the preceding transactions.
+\end{itemize}
+
+\subsubsection{Performance and Testing}
+\begin{itemize}
+    \item Increase in resource usage causes microservice applications to perform slower
+    
+    \item This can be overcome by provisioning more hardware, logging to analyze bottlenecks, throttling, dedicated thread pools, and asynchronous features to improve performance
+    
+    \item Writing integration test cases is challenging as it requires knowledge of all microservice components and since such apps are asynchronous
+    
+    \item Solution is adopting various testing methodologies and tools and leveraging continuous integration capabilities through automation and standard agile methodologies
+\end{itemize}
+\end{document}

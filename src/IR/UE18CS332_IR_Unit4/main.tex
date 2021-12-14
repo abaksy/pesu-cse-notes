@@ -1,0 +1,771 @@
+\documentclass{article}
+\usepackage[a4paper, portrait, margin=1in]{geometry}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+
+\title{AIW \& Information Retrieval (UE18CS322)\\Unit 4}
+\author{Aronya Baksy}
+\date{May 2021}
+
+\begin{document}
+\maketitle
+
+\section{Web Advertising}
+\subsection{Cost Per Impression Model}
+\begin{itemize}
+    \item The purpose of advertising is 
+    \begin{itemize}
+        \item Convey positive feelings about a brand or product
+        
+        \item Generate awareness about the new product
+    \end{itemize}
+    
+    \item Advertising impact is measured in cost per 1000 impressions.
+    
+    \item Decision whether to display banner Ads depends on product. Yahoo does it, Google does it only selectively 
+\end{itemize}
+
+\subsection{Cost Per Click Model}
+\begin{itemize}
+    \item Advertiser is charged when their advertisement gets clicked
+    
+    \item Advertisers bid for “keywords”. Ads for highest bidders displayed when user query contains a purchased keyw
+    
+    \item e.g.:\begin{itemize}
+        \item \textbf{YouTube Affiliate Marketing} : YouTube Affiliate will make videos with the aim of getting you to buy products from a 3rd party site
+        
+        \item \textbf{Amazon Affiliate}: entirely free for website owners and bloggers to be Amazon affiliates, allow Amazon ads on their website/blog.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Cost Per Action Model}
+\begin{itemize}
+    \item Advertiser pays for an action undertaken, e.g. buying a product
+    
+    \item e.g.: \textbf{Amazon Associates} advertise products from Amazon.com on their websites by creating links. 
+    
+    \item When customers click the links and buy products from Amazon, they earn referral fees
+\end{itemize}
+
+\subsection{Comparison}
+\begin{itemize}
+    \item 1\% of all viewers click on an ad. 1\% of all clickers actually buy a product. Hence impression rate is largest, but action rate is lowest
+    
+    \item Suppose advertiser pays $x$ for 1000 impressions:
+    \begin{itemize}
+        \item As per \textbf{CPI} model, cost per impression = $\frac{x}{1000}$
+        
+        \item As per \textbf{CPC} model, cost per click = $\frac{x}{10}$
+        
+        \item As per \textbf{CPA} model, cost per action = $\frac{x}{0.1} = 10x$
+    \end{itemize}
+    
+    \item CPI is most risky, CPA is least risky. CPI is risky because money is being spent to show to people who are mostly not interested
+    
+    \item If the risk needs to be divided between advertiser and publisher, CPC is the chosen model
+    
+    \item Publisher would prefer CPI (more frequent). Advertiser prefers CPA (least risk). 
+\end{itemize}
+
+\subsection{Search Ads}
+\begin{itemize}
+    \item Closer connection between viewing a search ad and actually buying a product, as against randomly seeing the ad on TV/Newspaper
+    
+    \item Allows for a CPC model.
+    
+    \item Parties involved:
+    \begin{itemize}
+        \item \textbf{Publisher}: gets revenue everytime someone clicks on an ad, and punish misleading or irrelevant ads. (e.g.: Google)
+        
+        \item \textbf{Users} click on ads and get their needs fulfilled
+        
+        \item \textbf{Advertisers} find new customers by paying publishers to host their ads.
+    \end{itemize}
+    
+    \item Issues with search Ads:
+    \begin{itemize}
+        \item \textbf{Keyword Arbirtrage}: Buy a keyword at Google, redirect to a service that is more cost effective. 
+        
+        \item \textbf{Click Spam}: Publisher executes clicks for fake users, and extracts money from advertisers.
+    \end{itemize}
+    
+    \item First gen search engines like \textbf{Goto} ordered search results for a query \textbf{q}, by the money bidded by each advertiser for query \textbf{q}.
+    
+    \item Next gen search engines combined the pure algorithmic behaviour (Google etc.) with the sponsored behaviour. Show both search results side by side.
+    
+    \item Search engines claim not to let sponsorships affect the actual search ranking.  
+\end{itemize}
+
+\subsubsection{Ranking for Sponsored Ads}
+\begin{itemize}
+    \item \textbf{Auction system}: advertisers bid for keywords, anyone can participate in auction
+    
+    \item To determine the rank of the ad, a second price auction is held
+    
+    \item Types of ranking: based only on bid price, or based on both bid price and relevance. Relevance measures for ads are:
+    \begin{itemize}
+        \item Click through rate (clicks per impressions)
+        
+        \item Location, time of day
+        
+        \item Lnding page quality, loading time for landing page
+    \end{itemize}
+    
+    \item An Ad rank for an ad is analogous to Pagerank for a normal webpage. The Adrank formula may consist of CTR, landing page experience, ad relevance to query, ad formats. etc.
+    
+    \item An auction is a NOT bargaining or negotiation, rather it is a price discovery mechanism
+\end{itemize}
+
+\subsubsection{Vickrey Auction}
+\begin{itemize}
+    \item Also called the sealed-bid, second-price auction. 
+    
+    \item All bidders submit their price simultaneously, without knowing anyone else's bids. The highest bidder is the winner of the auction, but the winner pays the price of the second highest bid. 
+    
+    \item In Google's version of the second-price auction, the rank of a bidder is determined by the value of $bid\text{ }value \times CTR$, instead of just the bid value.
+    
+    \item The advertiser pays the minimum amount necessary to maintain their position in the auction. This is calculated by:
+    \begin{equation*}
+        p_n = p_{n-1} \times \frac{CTR_{n-1}}{CTR_n} 
+    \end{equation*}
+    
+    where $n$ is the auction rank of a bidder. 
+    
+    \item The actual formula may depend on more criteria than just the CTR, such as landing page quality, relevance of query and ad etc.
+\end{itemize}
+
+\subsubsection{Google Display Network}
+\begin{itemize}
+    \item The GDN is Google's network of websites and apps where it displays advertisements to internet users.
+    
+    \item Google pays these websites and apps to host the banner ads.
+\end{itemize}
+
+\subsection{Google's Search Ad System}
+\subsubsection{AdWords}
+\begin{itemize}
+    \item Based on search keywords. 
+    
+    \item Businesses that use AdWords will pay Google a sum for advertisement based on keyword search
+    
+    \item \textbf{AdWords for Video} allows businesses to display video ads in YouTube search results, within a YouTube video or anywhere within the GDN. 
+\end{itemize}
+
+\subsubsection{AdSense}
+\begin{itemize}
+    \item For website publishers, they can monetize their websites by publishing AdWords ads.
+    
+    \item Publishers get paid for each click on an ad hosted on their website.
+    
+    \item Google uses its technology to serve advertisements based on   website content, the user's location, and other factors
+\end{itemize}
+
+\subsection{Programmatic Advertisement}
+\begin{itemize}
+    \item The process of buying and selling ads with software and publishing those ads contextually
+    
+    \item Context is handled by algorithms that account for user browsing history, IP Address, location, time of day etc.
+    
+    \item \textbf{Demand Side Platforms} are third-party software that allow one to purchase, analyze, manage ads across many networks from a single place
+    
+    \item \textbf{Supply Side Platforms} are third-party software that allow publishers to auction off their inventory, fill it with the winning buyer's material and earn revenue. They communicate with the DSP regarding impressions
+    
+    \item \textbf{Data Management Platforms} are used to store, compile and analyze data which is used by DSP and SSPs to optimize. 
+\end{itemize}
+
+\subsection{Understanding Search Users}
+\begin{itemize}
+    \item User queries may be \textbf{informational}, \textbf{navigational}, \textbf{transactional} or \textbf{others}
+    
+    \item Discering the query type is important for advertisers. Informational and transactional queries have good potential for sponsored results, while that of navigational is low. 
+\end{itemize}
+
+\section{Characteristics of the Web}
+\begin{itemize}
+    \item The web document collection has the following characteristics:
+    \begin{itemize}
+        \item No global design or co-ordination rules
+        
+        \item Distributed content creation and linking. Content may be dynamically generated
+        
+        \item Various levels of truth: obsolete truths, complete falsehoods, contradictions etc
+        
+        \item No universal notion of trust
+        
+        \item May be unstructured, semi-structured, or structured
+        
+        \item Very highly scalable, fast growing
+    \end{itemize}
+    
+    \item The web may be represented as a \textbf{static graph} where each HTML page is a node and each hyperlink is a directed link to another node. 
+    
+    \item The \textbf{degree centrality} measure ranks nodes/pages with more connections higher in terms of centrality (ignoring direction or weight of connections)
+    
+    \item Drawback of degree centrality: Only local neighbourhood, cannot measure impact on the global graph network, and does not work with directed graphs
+    
+    \item The eigenvector approach attempts to find similarity patterns on a global scale, ignore local effects as much as possible.
+    
+    \item Bow-Tie structure: every strongly connected component of the web graph has an out-component and an in-component.
+    
+    \item Corollary: if a node belongs to both in and out components of a SCC, then that node is part of the SCC. 
+\end{itemize}
+
+\section{SEM and SEO}
+\subsection{Search Engine Marketing (SEM)}
+\begin{itemize}
+    \item Understand how search engines rank ads, develop bidding strategy for keywords
+    
+    \item Goal is secure top rank in ads shown by search engine, with optimum amount of money spent
+\end{itemize}
+
+\subsection{Search Engine Optimization (SEO)}
+\begin{itemize}
+    \item Understand how search engines rank pages
+    
+    \item Goal is to have the web pages of the organization secure top rank in the pages shown by search engine for a given query ( having certain keywords)
+    
+    \item “Tuning” your web page to rank highly in the algorithmic search results for select keywords
+    
+    \item Alternative to paying for ad placement, and thus, intrinsically a marketing function
+\end{itemize}
+
+\subsection{Spam}
+\begin{itemize}
+    \item Motives: political/religious/commercial, funded by advertising budget
+    
+    \item Operators: contractors (SEO), web masters or hosting services
+    
+    \item Forums: webmasterworld, academic discussions
+\end{itemize}
+
+\subsubsection{Keyword Stuffing}
+\begin{itemize}
+    \item Defeat Tf-IDF bys stuffing pages with repeated terms (hide the repeated terms in the background of the page maybe)
+    
+    \item Such repetitions not visible to website users, but since the crawler can see them, they increase the TF-IDF relevance score
+    
+    \item Implemented as meta-tags (hidden metadata tags in HTML page) or hidden text (using style tricks)
+\end{itemize}
+
+\subsubsection{Cloaking}
+\begin{itemize}
+    \item DNS cloaking: Switch IP address. Impersonate
+    
+    \item Serve fake content to search engine spider with misleading keywords
+    
+    \item For the actual user, the content will be different !
+\end{itemize}
+
+\subsubsection{Other Spamming Techniques}
+\begin{itemize}
+    \item \textbf{Doorway pages}: pages optimized for a single keyword that redirect to the actual page. 
+    
+    \item \textbf{Clickbait}: actual content may not be valuable or interesting, but headline or title is attractive enough to generate impressions and clicks
+    
+    \item \textbf{Link Spamming}: Mutual admiration (in the form of hyperlinks), or domain flooding (multiple domains that point to a single webpage)
+\end{itemize}
+
+\subsubsection{Countering Spam}
+\begin{itemize}
+    \item Alternate metrics for page quality: user votes or author votes
+    
+    \item Policing of URL submissions
+    
+    \item Link analysis detects spammers (guilt by association)
+    
+    \item Using machine-learning techniques (text mining)
+    
+    \item Linguistic analysis, image analysis to detect family-friendly content 
+    
+    \item Editorial (human) intervention using blacklisting, top queries audited, pattern detection
+\end{itemize}
+
+\subsection{Web Search Index Size}
+\begin{itemize}
+    \item With increasing index size, recall of search engine will suffer, and search engine may become less efficient at document retrieval. 
+    
+    \item Indexes vary in scope across search engines, hence there is no single measure of index size. 
+    \begin{itemize}
+        \item Some search engines may return content not within the index, but based on rules such as anti-spam rules, max url depth, max count/host etc.
+        
+        \item Search Engines index different things under the same URL and all of them may not get used for all queries
+    \end{itemize}
+\end{itemize}
+\subsubsection{Capture-Recapture Method}
+\begin{itemize}
+    \item Initial hypothesis: size of web is finite, each search engine is indexing an uniform, independent and randomly chosen subset of the web
+    
+    \item Given 2 indices $E_1$ and $E_2$. Symmetrically test whether a page from $E_1$ is in $E_2$, and similarly if a page from $E_2$ is in $E_1$. 
+    
+    \item The result is that we get $x$ fraction of pages in $E_1$ are in $E_2$, and that a fraction $y$ of pages in $E_2$ are in $E_1$. 
+    
+    \item Then, according to the initial hypothesis, we have
+    \begin{align*}
+        x |E_1| &\approx y |E_2| \\
+        \frac{|E_1|}{|E_2|} &\approx \frac{y}{x}
+    \end{align*}
+\end{itemize}
+
+\subsubsection{URL Sampling Approaches}
+\begin{itemize}
+    \item Can be done randomly, from the index of one of the engines, or from a collection of documents entirely outside both indices. 
+\end{itemize}
+
+\begin{enumerate}
+    \item \textbf{Random Searches}: 
+    \begin{itemize}
+        \item Starting with a search log (generated from a single user group maybe), send a random search from the log to $E_1$ and a random page from the results. 
+    
+        \item The bias in this approach comes from the types of searches made by a particular user group
+    \end{itemize}
+    
+    \item \textbf{Random IP Addresses}:
+    \begin{itemize}
+        \item Generate random IP, send request to that IP and get all pages stored at that server. 
+    
+        \item Biases here include the types of pages stored on the server, the fact that many servers share a single IP (virtual hosting)
+    \end{itemize}
+    
+    \item \textbf{Random Walk}:
+    \begin{itemize}
+        \item Start from arbitraryt page in the page graph, and start a random walk. The random walk converges to a steady state where probability of picking any page becomes constant
+    
+        \item Since the web graph is not strongly connected, steady state may not be reached. Even if it is, time taken to reach steady state is not known at the beginning.
+    \end{itemize}
+    
+    \item \textbf{Random Queries}:
+    \begin{itemize}
+        \item Pick a set of random terms from a web dictionary (put together by a web crawler), then build random conjunctive queries from these.
+    
+        \item For each query, get a random page $p$ from the top 100 results on $E_1$. From $p$, get some low-frequency terms, build a query from them and send to $E_2$. This tests presence of $p$ in $E_2$. 
+        
+        \item Biases:
+        \begin{itemize}
+            \item Biased towards longer documents
+            
+            \item Picking top 100 of $E_1$ introduces ranking bias of $E_1$
+            
+            \item $E_2$ may not handle the queries properly
+            
+            \item Operational issues like connection timeout.
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+\section{Handling Duplicates in Web Search}
+\begin{itemize}
+    \item Aim is to compute syntactic similarity (not semantic, too hard). Similarity threshold $\theta$ denotes whether 2 documents are duplicates or not.
+\end{itemize}
+\begin{enumerate}
+    \item \textbf{Naive Approach 1}:
+    \begin{itemize}
+        \item  Convert both documents to sets, then compute Jaccard Similarity. Document pairs with Jaccard coefficient above $\theta$ are flagged as duplicate
+    
+        \item For a corpus of $N$ documents, number of comparisons is $C(N, 2)$ which is $O(N^2)$ comparisons.
+    \end{itemize}
+    
+    \item \textbf{Naive Approach 2}:
+    \begin{itemize}
+        \item Compute, for each web page, a fingerprint that is a 64-bit summary of the characters on that page. Compare fingerprints for each pair
+    
+        \item Complexity is $O(N^2d)$ where $d$ is number of words on document. Impractical, and also fails to detect \textit{near duplicates}.
+    \end{itemize}
+    
+    \item \textbf{Shingles}:
+    \begin{itemize}
+        \item Also called $n-grams$. Build sequences of $n$ consecutive terms from the document. 
+        
+        \item Let $S(d_i)$ be the set of shingles built from document $d_i$. Find Jaccard similarity between sets of shingles, and flag as duplicate if score exceeds threshold $\theta$
+        
+        \item Shingle size:
+        \begin{itemize}
+            \item Small shingles appear in too many documents. Large shingles appear in too few. 
+            
+            \item Shingle size should be proportional to average document length in corpus. 
+            
+            \item Comparing all pairs of documents for shingle set in each document will not scale – still $O(N^2)$
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Sketches}:
+    \begin{itemize}
+        \item Select a random number of shingles from each document, this set is now called a sketch. 
+        
+        \item Reduced number of comparisons, accuracy suffers but good enough. 
+    \end{itemize}
+    
+    \item \textbf{Hashing}
+    \begin{itemize}
+        \item Represent each shingle as a unique number. A 64-bit hash function hashes large shingles, also handles collisions due to hashing
+        
+        \item Space saving due to storing just one integer instead of a sequence of characters
+        
+        \item Efficient due to just number comparision, instead of comparing strings. 
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Locality Sensitive Hashing}
+\begin{itemize}
+    \item Every time a new document enters the collection, it has to be compared to all $N$ documents in the corpus again, not efficient as $N$ scales up.
+    
+    \item LSH: an algorithm such that if we generate hashes of 2 documents, it tells us if their similarity is greater than a threshold $\theta$ in a non-brute force method. 
+    
+    \item Key idea, $similarity(D_1, D_2) \propto Prob(H(D_1) == H(D_2))$. Choice of hash function $H(D)$ is linked to choice of similarity function. (for Jaccard, we use min-hashing)
+    
+    \item The min-hash function generates a fixed-length signature for each document.
+    
+    \item The algorithm for getting Min-Hash similarity is:
+    \begin{itemize}
+        \item Input: matrix with shingles across the rows, documents across columns 
+        
+        \item Generate $k$ permutations of the matrix (row-wise, i.e. move the rows around only). For each permutation $\pi$, generate the signature using the function
+        \begin{equation*}
+            H_{\pi}(C) = min_{\pi} C
+        \end{equation*}
+        meaning, the index of the first (in the permuted order) row in which column C has value 1
+        
+        \item For each permutation, now we have a row vector of length $|D|$. Stack these rows on top of one another to get the signature matrix $M$.
+        
+        \item Each column of $M$ is the signature or hash of the corresponding document. THe length of each signature is $k$. 
+        
+        \item Similarity between 2 documents is basically Jaccard similarity of the corresponding columns.
+    \end{itemize}
+    
+    \item With larger corpora, creating permutations becomes expensive. Hence in the real-life minhash implementation, this permutation is represented as combinations of multiple hash functions.
+\end{itemize}
+
+\subsubsection{Band partitioning}
+\begin{itemize}
+    \item Take signature matrix, divide it horizontally into $b$ \textbf{bands}, each band having $r$ rows. 
+    
+    \item For each band, hash its portion of each column to a hash table with $k$ buckets
+    
+    \item Candidate column pairs are those that hash to the same bucket for at least 1 band 
+    
+    \item Requirement: If 2 documents have similarity greater than $\theta$ then probability of them sharing the same bucket in atleast one of the bands should be 1
+    
+    \item Calculations:
+    \begin{align*}
+        P(d_1 \text{ and }d_2\text{ are identical in one band }) &= \theta^r \\
+        P(d_1 \text{ and }d_2\text{ not similar in all $b$ bands }) &= (1-\theta^r)^b \\
+        P(d_1 \text{ and }d_2\text{ similar in atleast 1 band }) &= 1-(1-\theta^r)^b
+    \end{align*}
+    
+    \item The second equation is the \textbf{false negative rate} (if we want $d_1$ and $d_2$ to be hashed to the same bucket).
+    
+    \item The third equation is the \textbf{false positive rate} (if we don't want $d_1$ and $d_2$ to be hashed to the same bucket). 
+\end{itemize}
+
+\subsubsection{Real-life Implementation}
+\begin{itemize}
+    \item Shuffling too slow, hence people simply rehash the shingle to get a new signature for it and then store smallest one (from set of shingles) in the first signature slot.
+    
+    \item Typically universal hash function is used with separate parameters for each slot so that we get effectively a different 
+    \begin{equation*}
+        H(X) = ((ax + b)\text{ modulo }p)\text{ modulo } N
+    \end{equation*}
+\end{itemize}
+\section{Web Crawler}
+\subsection{Basic Operation}
+\begin{itemize}
+    \item Initialize queue with seed URLs. Remove one from queue, parse the page, extract the URLs from it and add them to queue. 
+    
+    \item This is effectively a BFS traversal of the web graph. 
+    
+    \item \textbf{URL frontier} consists of the set of URLs identified for crawling but not yet crawled
+    
+    \item Requirements for a crawler:
+    \begin{itemize}
+        \item \textbf{Polite}: respect implicit and explicit politeness criteria (timeouts, well spaced out requests to avoid DoS, other restrictions)
+        
+        \item \textbf{Robust}: Immune to spider traps and other malicious behaviour
+        
+        \item \textbf{Distributed}: Run on multiple machines, no need to fetch all pages to a single machine
+        
+        \item \textbf{Scalable} with number of machines
+        
+        \item \textbf{Efficient}: in terms of resource utilization (memory and network bandwidths)
+        
+        \item \textbf{Priority}: Fetch high quality pages first
+        
+        \item \textbf{Continuous}: Always keep fetching pages and their updated fresh copies 
+        
+        \item \textbf{Extensible} to new protocols and data formats
+    \end{itemize}
+    
+    \item Implicit politeness: no specifications on allowed URLs, but do not hit any one server too often
+    
+    \item Explicit politeness: webserver specifies blocked URLs for crawling in a \texttt{robots.txt} file.
+    
+    \item DNS cache or Batch DNS resolvers reduce latencies associated with DNS lookup.
+    
+    \item Normalize relative URLs into absolute URLs.
+    
+    \item Do not crawl duplicate pages (verify using shingles/fingerprints)
+    
+    \item Cache all \texttt{robots.txt} files, avoid repeatedly retrieving them. 
+    \item Processing steps:
+    \begin{itemize}
+        \item Pick URL from frontier. Fetch document at that URL
+        
+        \item Extract links to other documents from the page
+        
+        \item If URL not already seen, add to index. 
+        
+        \item For each extracted URL, test for filters, test whether it already exists in frontier. 
+    \end{itemize}
+\end{itemize}
+
+\subsection{Distributed Crawler Implementation}
+\begin{itemize}
+    \item Every node completes one step in the processing, then send the processed URL to another node (decided using some hash function).
+    
+    \item Every node receives as well as sends URLs.
+    
+    \item Politeness and freshness are conflicting goals in a simple FIFO traversal.
+    
+    \item In a distributed scheme, freshness is denoted by a priority. Priority is assigned using heuristics (website popularity, refresh rate from previous crawls, application-specific)
+    
+    \item According to the priority assigned, each URL goes into a separate \textbf{front queue}. 
+    
+    \item A front queue is selected by the \textbf{front queue selector} (round robin fashion) with an added bias that favours the high priority front queues. From the selected FQ, a URL is picked.
+    
+    \item The back queue router routes the selected URL from the selected queue, to a \textbf{back queue}. Each back queue is on one host machine.
+    
+    \item Back queues are organized either by URL source (one back queue contains only URLs from one web host), or by emptiness (make sure no back queue is empty at any time)
+    
+    \item The \textbf{back queue heap} contains one entry for each back queue. The nodes are sorted in a min-heap fashion by the earliest time the coresponding host can be hit again ($t_e$)
+    
+    \item A crawler thread gets the heap root, picks a URL from the corresponding back queue $q$.
+    
+    \item If $q$ is empty, pull an URL $v$ from the front queue chosen. If there’s already a back queue $q$ for $v$’s host, append $v$ to $q$ and pull another URL from front queues, repeat till the back queue is filled.
+    
+    \item Else add $v$ to $q$ if $v$ is a new host. 
+    
+    \item Recommended: number of back queues = 3 x number of crawlers
+\end{itemize}
+
+\section{Page Rank}
+\subsection{Background}
+\begin{itemize}
+    \item Given a square, non-singular matrix $A$, and a column vector $\overrightarrow{x}$, the values $\lambda$ that satisfy the equation 
+    \begin{equation*}
+        A\overrightarrow{x} = \lambda \overrightarrow{x}
+    \end{equation*}
+    are called the \textbf{right Eigenvalues} or simply the \textbf{Eigenvalues} of the matrix $A$
+    
+    \item For each Eigenvalue $\lambda$, the corresponding vector $\overrightarrow{x}$ is called the \textbf{Eigenvector}. 
+    
+    \item \textbf{Left Eigenvectors} (row vectors) and \textbf{Left eigenvalues} satisfy the following:
+    \begin{equation*}
+        \overrightarrow{x_L} A = \lambda \overrightarrow{x_L}
+    \end{equation*}
+    
+    \item A Markov Chain is called \textbf{Ergodic} if there exists a positive integer $T_0$ such that for all pairs of states $i$ and $j$, if chain starts at $t=0$ in state $i$ then probability of being in state $j$ at time $t > T_0$ is $>0$.
+    
+    \item The conditions for Ergodicity are:
+    \begin{itemize}
+        \item \textbf{Irreducible}: there exists a sequence of transitions of non-zero probability from any state to any other
+        
+        \item \textbf{Aperiodic}: states are not partitioned into sets such that all state transitions occur cyclically from one set to another
+    \end{itemize}
+    
+    \item \textbf{Steady State Theorem} : For any ergodic Markov Chain, there is a unique steady state probability vector $\pi$ that is the \textbf{principal left Eigenvector} of transition Matrix $P$
+    
+    \item The \textbf{PageRank Vector} is simply the steady state distribution of a random walk process over the web graph. 
+\end{itemize}
+
+\subsection{Eigenvector Centrality}
+\begin{itemize}
+    \item The centrality (aka popularity, aka PageRank) of a node is dependent on the centrality of its neighbours, instead of just the degree of that node in the graph.
+    
+    \item Assume that all pages have the same initial score and then iteratively update until the steady state distribution is reached
+\end{itemize}
+
+\subsection{Hotelling's Power Method for Eigenvalue Centrality}
+\begin{itemize}
+    \item Let $x_0$ be the initial pagerank vector for all nodes, and $A$ be the transition probability matrix
+    
+    \item We define the PageRank at time $t$, $x_t$ as
+    \begin{align*}
+        x_t &= A x_{t-1} \\
+        x_t &= A. A x_{t-2} \\
+        \implies x_t &= A^2 x_{t-2} \\
+        \implies x_t &= A^t x_0
+    \end{align*}
+    
+    \item Let $x_0$ be the linear combination of the eigenvectors of $A$, hence
+    \begin{align*}
+        x_0 &= \sum c_i v_i \\
+        x_t &= A^t \sum c_i v_i \\
+    \end{align*}
+    
+    \item Since we have $Av = \lambda v$ for all $v_i$, hence we have $A^t v = \lambda^t v$, and hence 
+    \begin{equation*}
+        x_t = \sum \lambda_i^t c_i v_i
+    \end{equation*}
+    
+    \item Divide both sides by $\lambda_1^t$ where $\lambda_1$ is the dominant i.e. largest eigenvalue
+    \begin{align*}
+        \frac{x_i}{\lambda_1^t} = \sum \left( \frac{\lambda_i}{\lambda_1} \right)^t c_i v_i
+    \end{align*}
+    
+    \item As $t \rightarrow \infty$, we have 
+    \begin{equation*}
+        \lim_{t \to \infty} \frac{x_i}{\lambda_1^t} = c_1 v_1
+    \end{equation*}
+    as all other terms become 0. Thus the steady state distribution is essentially the \textbf{dominant eigenvector} of matrix $A$.
+\end{itemize}
+
+\subsection{Modification for Directed Graphs}
+\begin{itemize}
+    \item Now the page rank for each node is dependent only on the \textbf{incoming links into that node}. 
+    
+    \item Hence a page with many outgoing links but no incoming links will still have popularity 0, which is not realistic. 
+    
+    \item To solve this, two constants $\alpha$ and $\beta$ are introduced. 
+    
+    \item $\alpha$ is a damping constant on the actual page rank value. $\beta$ is the initial page rank added to the rank of all nodes.
+    
+    \item The modified calculation is now:
+    \begin{equation*}
+        x_i = \alpha  \left( \sum_{j=1}^{n} A_{ji} x_j \right) + \beta
+    \end{equation*}
+\end{itemize}
+
+\subsection{PageRank Modification}
+\begin{itemize}
+    \item Issue: Everyone known by a well-known person is assumed to be well-known.
+    
+    \item To mitigate this problem, divide the value of passed centrality by the number of outgoing links
+    
+    \item The modified calculation is now:
+    \begin{equation*}
+        x_i = \alpha  \left( \sum_{j=1}^{n} A_{ji} \frac{x_j}{d_j^{out}} \right) + \beta
+    \end{equation*}
+\end{itemize}
+
+\subsection{PageRank Formula using Random Walk}
+\begin{itemize}
+    \item The walk is currently at node $j$ with probability $b_j$. 
+    
+    \item For each node $j$ that the target node $i$ is linked to, the proability of transitioning to $i$ is $\frac{1}{l_j}$ where $l_j$ is the number of outward links at node $j$
+    
+    \item Hence we get the total probability of landing up at node $i$ in the next step as
+    \begin{equation*}
+        P = \sum_{\text{incoming nodes to $i$}} \frac{b_j}{l_j}
+    \end{equation*}
+    
+    \item In matrix form this is simply written as $A^{T}v$ where $A$ is the transition probability matrix, and $v$ is the current state probability distribution. This is essentially the standard pagerank update rule
+    
+    \item \textit{Modified walk}: with probability $s$ ,the walk follows a random edge as before and with probability $1-s$ , it jumps to a node chosen randomly 
+    
+    \item Hence the new revised formula is
+    \begin{equation*}
+        P = s \left(\sum_{\text{incoming nodes to $i$}}  \frac{b_j}{l_j} \right) + \frac{1-s}{N}
+    \end{equation*}
+    
+    \item \textit{Google's approximation}: for a sparse Google matrix, the 1/n values in matrix B can be approximated with 1. Hence the revised formula is
+    \begin{equation*}
+        P = s \left(\sum_{\text{incoming nodes to $i$}}  \frac{b_j}{l_j} \right) + (1-s)
+    \end{equation*}
+\end{itemize}
+
+\subsection{Limitations of pagerank}
+\begin{itemize}
+    \item \textbf{Rank Sink} occurs when a page has no outgoing links, only incoming links, hence it contributes nothing to the page rank of other pages
+    
+    \item \textbf{Hoarding} or circular reference is the situation when a group of pages link only among themselves, hence monopolizing the pagerank
+    
+    \item \textbf{Dangling nodes} which prevent random walk from functioning normally.
+    
+    \item \textbf{SOLUTION}: The random surfer spends proportion of the time following links at random and a proportion of the time 'teleporting' to a new random  URL.
+\end{itemize}
+
+\subsection{Possible Enhancements to PageRank}
+\begin{itemize}
+    \item Build \textbf{topic specific pagerank distributions}. For users interested in one topic, only that specific pagerank distribution is invoked
+    
+    \item THis is possible when the search engine knows the user's interests
+    
+    \item Users having multiple interests can be modelled as a linear combination of each topic's pagerank. 
+    
+    \item Choose the proportion of each topic, build a linear combination which is essentially an Ergodic Markov chain that is now personalized to the user
+\end{itemize}
+
+\subsection{Real-World Impact}
+\begin{itemize}
+    \item In practice: rank is assigned according to weighted combination of raw text match, anchor text match, PageRank \& other factors.
+    
+    \item PageRank continues to be an important part of the page importance score that is assigned by the search engines. 
+\end{itemize}
+
+\section{Hyperlink Induced Topic Search (HITS)}
+\begin{itemize}
+    \item Search Engine does not have much context to assess the intent of all links that the search engine gives as query result. 
+    
+    \item One possible approach: collect all web pages that mention the query, find that maximum number of links from all these pages point to which website, and then push that website as the best result
+    
+    \item This is done using the following:
+    \begin{enumerate}
+        \item Collect a large sample of web pages that relevant to the query by a text only retrieval system
+        
+        \item  Let these pages vote through their links
+        
+        \item Find out the page on the web that receives largest number of in-links from the sample pages collected
+    \end{enumerate}
+    
+    \item For each sample page, it's score is the sum of number of votes received by each link it voted for. 
+    
+    \item Once each sample page has a score, the new score for each link is computed as the sum of scores for all the pages that voted for it.
+    
+    \item There are 2 main types of pages:
+    \begin{itemize}
+        \item \textbf{Authorities} are pages containing useful information i.e, the prominent, highly endorsed answers to the queries
+        
+        \item \textbf{Hubs} are pages that link to authorities 
+    \end{itemize}
+    
+    \item Typically weights are normalized such that sum of squared hub weights and authority weights are 1. 
+    
+    \item It can be proved that after $N$ iterations ($N=5$ typically) the hub and authority scores converge to a steady state. 
+\end{itemize}
+
+\subsection{Implementation of HITS}
+\begin{itemize}
+    \item Executed in two steps:
+    \begin{enumerate}
+        \item \textbf{Sampling Step} : to collect a set of relevant web pages given a topic
+        \item \textbf{Iterative Step} : To find the hubs and authorities using the information collected during sampling
+    \end{enumerate}
+        
+    \item Sampling is done by querying a search engine and then using the most highly ranked web pages retrieved for determining hubs and authorities
+\end{itemize}
+
+\subsection{Drawbacks}
+\begin{itemize}
+    \item No clear cut distinction between hubs and authorities, some pages may be both hubs and authorities
+    
+    \item Topic drift: the sampled documents in fact may not be very relevant to query being posted
+    
+    \item Auto generated links represent no human judgements but HITS still gives them equal importance
+\end{itemize}
+
+\begin{tabular}{|p{0.45\textwidth} | p{0.45\textwidth} |}
+    \hline
+    \textbf{HITS} & \textbf{PageRank}  \\
+    \hline
+    Introduced in 1997 & Introduced in 1998 \\
+    \hline
+    Used on result set of query & Used on all pages in the Web \\
+    \hline
+    Normalization after every iteration & No normalization involved \\
+    \hline 
+\end{tabular}
+
+\end{document}

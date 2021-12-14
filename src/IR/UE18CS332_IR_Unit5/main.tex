@@ -1,0 +1,524 @@
+\documentclass{article}
+\usepackage[a4paper, portrait, margin=1in]{geometry}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+
+\title{AIW \& Information Retrieval (UE18CS322)\\Unit 5}
+\author{Aronya Baksy}
+\date{May 2021}
+
+\begin{document}
+\maketitle
+\section{Recommender Systems}
+\begin{itemize}
+    \item Software agents that elicit customer preferences, and make recommendations accordingly, while improving the quality of decisions made by the customer. 
+    
+    \item Recommendations are provided to \textit{users}. The product being recommended is called an \textit{item}. 
+    
+    \item Recommendation analysis is based on interactions (past or present) between item and user (except for Knowledge-based RS where user supplies constraints on items).
+    
+    \item Principle behind recommender system: learn \textbf{dependencies} between user-centric and item-centric \textbf{behaviours}. Such a model is called a \textit{neighbourhood model}, belonging to the family of \textit{collaborative filtering models}.
+    
+    \item In \textit{content-based RS}, the user ratings are modelled on the basis of the attributes of the individual items they have rated/accessed in the past. 
+    
+    \item In \textit{knowledge-based RS}, users interactively specify their interests, and the user specification is combined with domain knowledge to provide recommendations
+    
+    \item The Recommender System problem can be formulated in either of 2 ways:
+    \begin{itemize}
+        \item \textbf{Prediction}: Predicting a rating value for a particular user-item combination. ($m\times n$ matrix of $m$ user ratings for $n$ items, complete the missing values in the matrxi)
+        
+        \item \textbf{Ranking}: Recommend top $k$ users to target for an item, or recommend top $k$ items to a user. 
+    \end{itemize}
+\end{itemize}
+
+\subsection{Goals of a recommender system}
+\begin{itemize}
+    \item \textbf{Relevance}: Generate interesting and relevant recommendations to the user. This is the primary operational goal, but not useful in isolation
+    
+    \item \textbf{Novelty}: Items recommended must be new to user, not seen before. (leads to increase in sales diversity) 
+    
+    \item \textbf{Serendipity}: aka the \textit{luck} factor, the items recommended are \textit{surprising} (not only novel) to the user. (e.g.: I like Indian, but RS recommends Ethiopian which is similar but surprising to me). Increases sales value, diversity, opens new scopes up needs to be balanced with relevance.
+    
+    \item \textbf{Increased Diversity}: Items recommended must be diverse (increases likelihood of user selecting atleast one item, hence increase business value)
+    
+    \item \textbf{Soft Goals}: Increased usability, increased customer retention
+\end{itemize}
+
+\section{Types of Recommender System Models}
+\subsection{Collaborative Filtering}
+\begin{itemize}
+    \item Given a matrix of ratings, the CF model tries to fill in the missing rating values using the \textit{collaborative power} of the specified ratings. 
+    
+    \item Main challenge is sparse nature of ratings matrix (most values are unspecified)
+    
+    \item Most CF models leverage item-item or user-user correlations, or both.
+    
+    \item \textbf{Memory-based}: 
+    \begin{itemize}
+        \item Ratings of user-item combinations are predicted using neighbourhoods. 
+        
+        \item Simple and easy to explain, but do not work well with sparse matrices. 
+        
+        \item Neighbourhoods are defined as:
+        \begin{enumerate}
+            \item \textbf{User-based}: Determine users similar to the target user, and based on these similar users' preferences determine the missing rating values
+            
+            \item \textbf{Item-based}: Find items most similar to the target item. The target user's ratings on these similar items is used to calculate the unknown rating for the item. 
+        \end{enumerate}
+    \end{itemize} 
+
+    \item \textbf{Model-based}:
+    \begin{itemize}
+        \item Using machine learning models in a predictive context. 
+        
+        \item Models that involve parameters learn these parameter values in a optimization framework
+        
+        \item e.g.: Rule-based models, Decision Trees, Bayesian methods
+    \end{itemize}
+    
+    \item In a CF problem, there is no distinction between dependent and independent variables, or between training and testing rows in the data.
+    
+    \item The CF problem is therefore said to be \textit{transductive}. A CF model will not be able to predict ratings for a new user if their ratings are added to the matrix after the model is trained. 
+\end{itemize}
+\subsubsection{Rating Scales}
+\begin{itemize}
+
+    \item Ratings can be either continuous (rare) or discrete. Discrete ratings can be in the form of numbers (0-5 or -2 to 2, etc., also called an \textit{interval scale}), or categorical values (strongly disagree, disagree, neutral, agree, strongly agree), also called the \textit{ordinal scale}. 
+    
+    \item In an \textbf{unbalanced} rating scale, there are more positive ratings than negative ratings within the scale (e.g. Netflix rating system)
+    
+    \item In a \textbf{binary rating scale}, users express only like or dislike behaviour, and no other information (e.g. Stanford course feedback form).
+    
+    \item In a \textbf{unary rating scale}, user express only their preference for a product, but not any dislike (e.g. buying a product at a retail store indicates preference for it, but not buying does not indicate dislike, hence cannot use binary scale)
+    
+    \item Ratings matrices generated by unary rating scales are also called \textit{positive preference utility matrices}, or \textit{implicit feedback matrices} as they are generated by user \textit{actions} and not ratings. 
+    
+    \item Substituting missing values in either explicit or implicit ratings is not recommended as it introduces bias.
+\end{itemize}
+
+\subsection{Content-based Recommender System}
+\begin{itemize}
+    \item Content refers to the description of items in the database.
+    
+    \item CBRS is useful when no info about user ratings is available. 
+    
+    \item In content-based methods, the item descriptions, which are labeled with ratings, are used as training data to create a user-specific modeling problem.
+    
+    \item  For each user, the training documents correspond to the descriptions of the items they have bought or rated
+    
+    \item Content based methods work well even when there is no past history of ratings for an item. A CBRS leverages ratings made for similar items along with info from the item description to make recommendations. 
+    
+    \item \textbf{Disadvantages}:
+    \begin{itemize}
+        \item CBRS tend to provide \textbf{obvious} recommendations, reducing diversity. (e.g. if a user has never consumed an item with a particular set of keywords, such an item has no chance of being recommended) 
+        
+        \item Not effective at providing recommendations for new users. This isbecause the   model for the target user needs to use the history of their ratings.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Knowledge-based Recommender Systems}
+\begin{itemize}
+    \item KBRS are used for infrequently bought products where ratings are not available in large quantities (i.e. the cold start problem)
+    
+    \item KBRS performs recommendations not on the basis of ratings, but on the basis of similairites between user requirements and item description. 
+    
+    \item A \textit{Knowledge base} is a set of rules and similarity functions that govern how retrieval of items is to be done given the user requirements. 
+    
+    \item Based on the interface, types of KBRS:
+    \begin{enumerate}
+        \item \textbf{Constraint-based}: Users specify constraints on the item attributes. Rules may include these user-specified ones, as well as others created by the system itself that link user and item attributes. Users iteratively modify their requirements until the desired result is obtained.
+        
+        \item \textbf{Case-based}: Specific cases are specified by the user as targets or anchor points, and similarity metrics are used to retrieve similar items to these cases. Similarity metrics comprise the domain knowledge of the system.
+    \end{enumerate}
+    
+    \item Based on the level of interactivity, types of KBRS:
+    \begin{enumerate}
+        \item \textbf{Conversational}: In this case, the user preferences are determined iteratively in the context of a feedback loop. Used for complex domains
+        
+        \item \textbf{Search-based}: User preferences are elicited using a fixed sequence of questions. 
+        
+        \item \textbf{Navigation-based}: aka critiquing systems, where the user supplies a set of change requests that are used to modify the currently recommended item. With an iterative sequence of change requests the user can arrive at the correct item. 
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Utility-based Recommender Systems}
+\begin{itemize}
+    \item The utility function is a function of the item attributes that calculates the probability of an user liking the item. 
+    
+    \item The difference between utility-based and other types is that the utility function is known before hand (\textit{a priori}) and is static.
+\end{itemize}
+
+\subsection{Demographic Recommender Systems}
+\begin{itemize}
+    \item The demographic information about the user is leveraged to learn classifiers that can map specific demographics to ratings or buying behaviours.
+    
+    \item In many cases, demographic information can be combined with additional context to guide the recommendation process to give rise to \textit{context-based} recommender systems.
+    
+    \item Rule-based classifiers are often used to relate the demographic profile to buying behavior in an interactive way
+    
+    \item Although demographic recommender systems do not usually provide the best results on their own, they add significantly to the power of other recommender systems as a component of hybrid or ensemble models.
+\end{itemize}
+
+\subsection{Hybrid and Ensemble Systems}
+\begin{itemize}
+    \item In many cases where a wider variety of inputs is available, different types of recommender systems may be used for the same task.
+    
+    \item Ensemble-based recommender systems are able to combine not only the power of multiple data sources, but they are also able to improve the effectiveness of a particular class of recommender systems by combining multiple models of the same type.
+\end{itemize}
+
+\section{Domain-specific Challenges}
+\begin{itemize}
+    \item \textbf{Context-based} or \textbf{Context-aware} recommender systems take into account various types of context information (location, season, time of day, etc.) while making recommendations
+    
+    \item Item ratings may either evolve with time, or be dependent on a specific time of day/month/year. 
+    
+    \item \textbf{Temporal} recommender systems take into account time as a factor when making recommendations. This is done either by introducing time as an explicit parameter in a CF system, or by viewing them as a special case of context-aware recommender systems.
+    
+    \item Click-streams on the internet are a form of time series data that can be used to make recommendations about user activity. Discrete sequential pattern mining and HMMs are some models used in such cases.
+    
+    \item \textbf{Location-based recommendations} can be of two main types:
+    \begin{enumerate}
+        \item \textit{User-specific location}, also called preference locality
+        
+        \item \textit{Item-specific location}, also referred to as travel locality
+    \end{enumerate}
+    
+    \item Location-based recommender systems are designed using various heuristics, as compared to context-aware recommender systems. 
+    
+    \item \textbf{Social recommender systems} are based on network structures, social cues and tags, or a combination of these various network aspects.
+    
+    \item Social RS that recommend nodes and links using the network structure, make use of various ranking algorithms (such as PageRank) that are personalized to a particular query or user.
+    
+    \item Link prediction is another problem prevalent in social RS (the aim is to find friends, i.e. potential links of interest for one given node in the network)
+    
+    \item Collective classificaiton is the problem wherein the aim is, given a collection of nodes of interest, to use these as training data and find other nodes of interest.
+    
+    \item Product recommendations with the help of social cues and network connections is called \textit{viral marketing}. 
+    
+    \item Determining influential and topically relevant entities within a network is called \textit{influence analysis}
+    
+    \item Trust information is incorporated into social recommender systems in direct or indirect ways through feedback mechanisms (reviews etc.)
+    
+    \item Social tags are useful as they provide info. about the interests of both the user and the content of the item because the tag is associated with both.
+    
+    \item Context-aware recommendation systems can use social tag info to make more robust recommendations.
+\end{itemize}
+
+\section{Advanced Problems in Recommender System}
+\subsection{Cold Start}
+\begin{itemize}
+    \item Cold start occurs in CF based systems where number of initially available ratings is small. 
+    
+    \item Content and knowledge based systems are more robust in this case, but can also suffer from cold start when sufficient knowledge is not available.
+\end{itemize}
+
+\subsection{Attack-Resistant Systems}
+\begin{itemize}
+    \item Attacks may be of various forms such as:
+    \begin{itemize}
+        \item Vendor submits inflated ratings for their own products to the recommendation service
+        
+        \item Vendor submits negative ratings/reviews for competing products
+    \end{itemize}
+    
+    \item RS algorithms are needed that are resistant to such forms of attack 
+\end{itemize}
+
+\subsection{Group Recommender Systems}
+\begin{itemize}
+    \item RS that are targeted towards groups of users instead of a single user (e.g. deciding a movie for a group, deciding music to play at a gym etc.)
+    
+    \item Early models in this area simply aggregated preferences of individual users to create group recommendations.
+    
+    \item The latest research in this domain moves away from simple averaging strategies, and towards modelling interactions between members of a group, because individuals have impact on each other's taste.
+\end{itemize}
+
+\subsection{Multi-Critera Recommender System}
+\begin{itemize}
+    \item A user's rating is not modelled as a single number, but as a real vector that corresponds to item's utility towards the user based on multiple criteria
+    
+    \item In addition to this multi-criteria rating, users may or may not submit an overall rating as well. 
+    
+    \item IF the overall rating is present then similarity has to be with respect to both overall as well as multi-criteria rating, but not both
+    
+    \item If overall rating is absent then the system must present ranked list of items bsaed on multiple criteria, which becomes more difficult. 
+\end{itemize}
+
+\subsection{Active Learning}
+\begin{itemize}
+    \item In an active learning setup, a learning algorithm can interactively query a user to label new data points with the desired 
+    
+    \item Active learning recommenders encourage users to enter ratings in order to populate the data and avoid cold start (provide incentives to rate)
+    
+    \item Users can be asked to rate items similar to the ones already rated (not helpful), or rate completely unrelated items (helpful for the data, but user may not be aware enough to rate it)
+\end{itemize}
+
+\subsection{Privacy Concerns}
+\begin{itemize}
+    \item The tradeoff is between the sensitive and personal nature of data that is collected from real users, and the release of real data that is crucial for algorithmic advancements
+\end{itemize}
+
+\subsection{Application Domains}
+\begin{itemize}
+    \item Web search, music/retail/content recommendation, news recommendations, computational advertising, etc.
+    
+    \item Domains are web-centric in nature, hence long-term user data (needed to track user interests) may not be available. 
+    
+    \item Changes to off-the-shelf techniques as well as new models such as multi-armed bandit recommender systems can mitigate these challenges. 
+\end{itemize}
+
+\section{Collaborative Filtering}
+\subsection{Introduction}
+\begin{itemize}
+    \item The basic idea of this class of algorithms is to exploit the “wisdom of the crowds”, to use behavioural patterns of a community to determine suitable recommendations for an individual user or in the context of a given reference item.
+    
+    \item CF techniques do not rely on content features and metadata of the items when determining the relevance of an item
+    
+    \item In its pure form, CF relies solely on a collection of explicit or implicit preference signals of users towards items. (i.e., ratings)
+    
+    \item Given the past ratings of an individual user, the goal is then to determine the (current) relevance of each item by combining these individual signals with the patterns of the community
+\end{itemize}
+
+\subsection{CF as a matrix completion task}
+\begin{itemize}
+    \item The input to the CF system is a matrix, where each row corresponds to one user and the columns correspond to recommendable items. Each entry of the matrix is the rating by the user of one particular item.
+    
+    \item The problem statement of CF is to find the missing entries 
+\end{itemize}
+\subsubsection{User-based CF}
+\begin{itemize}
+    \item  General idea: that users “who agreed in the past will probably agree again”
+    
+    \item To predict the score given by user $a$ for item $p$, the following 2 steps are done:
+    \begin{itemize}
+        \item Identify the $K$ users who exhibit the most similar rating patterns to the user $a$
+        
+        \item Combine the ratings given by these $K$ users for the item $p$ into the predicted rating for item $p$ by user $a$
+    \end{itemize}
+    
+    \item We define two users $a$ and $b$. We define $P$ as the set of all items rated by both $a$ and $b$. Then the similarity score between the users $a$ and $b$ is:
+    \begin{equation}
+        sim(a, b) = \frac{\sum_{p\in P} (r_{a, p} - \overline{r_a}) (r_{b, p} - \overline{r_b})}{\sqrt{\sum_{p\in P} (r_{a, p} - \overline{r_a})^2} \sqrt{ \sum_{p\in P} (r_{b, p} - \overline{r_b})^2}}
+    \end{equation}
+    
+    \item Essentially, take the ratings for items in $P$ from $a$ and $b$ in two vectors. Subtract the mean of the 2 vectors from the vectors themselves to now get 2 centered vectors.
+    
+    \item Then once the vectors hae been centered, find the cosine of the angle between the two vectors. 
+    
+    \item This similarity function takes values between -1 and +1. 0 similarity indicates no correlation between the two user's choices. 
+    
+    \item Once the similarity has been found for all users, and we choose the top $K$ most similar users to our target user, we predict the rating for item $p$ using:
+    
+    \begin{equation}
+        pred(a, p) = \overline{r_a} + \frac{\sum_{b\in K} sim(a, b)\times (r_{b,p} - \overline{r_b})}{\sum_{b\in K}| sim(a, b)|}
+    \end{equation}
+    
+    \item $b$ indicates a user who is part of the top $K$ users chosen by the similarity function. 
+    
+    \item The idea of this prediction function is to start with the average rating of user $a$ and then consider for each neighbor if item $p$ has been rated above or below the individual average rating. 
+    
+    \item These rating signals of the nearest neighbors are consequently weighted with the similarity between users. 
+    
+    \item Thus the ratings of more similar neighbors have a stronger influence on the derived rating predictions. 
+    
+    \item \textbf{Variations}:
+    \begin{enumerate}
+        \item \textbf{Similarity Function}: Cosine similarity, Jaccard coefficient, Dice coefficient (Latter 2 are applicable to binary data only). The similarity fn. could also take the \textit{number} of co-rated items into account and apply some weighting. 
+        
+        \item \textbf{Nearest Neighbour Selection}: Instead of selecting fixed number of neighbours or using some threshold to select, use an \textit{adaptive} strategy, that dynamically adjusts the similarity threshold to keep the number of nearest neighbors within a predefined range
+        
+        \item \textbf{Prediction Function}: Adjusting the importance weight of controversial items with a high rating variance or amplifying the importance of very similar users 
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{Item-based CF}
+\begin{itemize}
+     \item To predict the score given by user $a$ for item $p$, the following 2 steps are done:
+    \begin{itemize}
+        \item Identify the $K$ items who exhibit the most similar rating patterns to the target item $p$
+        
+        \item Combine the ratings given to these $K$ items by the user $a$ into the predicted rating for item $p$ by user $a$
+    \end{itemize}
+    
+    \item Item-based methods have some practical benefits over the user-based filtering:
+    \begin{itemize}
+        \item In general there are always more ratings per item than there are per user. This leads to more stable similarity models as they are now based on more common data points.
+        
+        \item Pre-computing the item similarities speeds up the prediction process at runtime. It is expensive but scalable (there are way more customers than there are items, and items can be filtered out by popularity) 
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{CF as a session-based approach}
+\begin{itemize}
+    \item The CF algorithms explained above are independent of the current context of the user's intent, recent behaviour etc.
+    
+    \item Hence session-based recommendation systems are formulated, which outputs recommendations that suit the context of one specific user session
+    
+    \item \textbf{Input}: 
+    \begin{itemize}
+        \item Part 1: Ordered list of user actions (each associated with an item). Data is organized at tuples of (\textit{user, item, action}). 
+    
+        \item This data can be further enhanced with additional attributes like user demographics or metadata features. 
+        
+        \item Part 2: Active session context, which consists of an ordered list of user actions within the current session. 
+    \end{itemize}
+    
+    \item \textbf{Output}: Ordered lists of predicted next user actions, where these actions are related to items
+    
+    \item Goal: determine a ranked list of items that are relevant to the \textit{actions} of the user in the \textit{current session}. Balance long-term user preferences with session's data. 
+    
+    \item The intended purpose of the recommended items is also important, apart from session data. (e.g.: items could be recommended as \textit{alternatives} to the item chosen by the user, or as \textit{accessories} to the chosen item).
+    
+    \item Session-based recommender systems do not have any fixed evaluation criteria which makes evaluation in an academic context difficult. 
+\end{itemize}
+
+\subsubsection{Nearest-neighbour approach for session-based RS}
+\begin{itemize}
+    \item Historical approaches to sequential pattern mining are HMMs, RNNs and explicit user feedback.
+    
+    \item Alternatively, as done by Amazon, focus on co=occurence patterns between user sessions. 
+    
+    \item In the session-based nearest-neighbour algorithm:
+    \begin{itemize}
+        \item Take the elements of the current user session and look for past sessions — including those by other users — who are similar to this session
+        
+        \item Find which other elements appeared frequently within this set of "neighbor sessions". These represent our recommendation candidates.
+    \end{itemize}
+    
+    \item We define a sessions $s$ as an ordered list of user actions. Given a set $S$ of past sessions of all users, and a similarity function $sim(s_1m s_2)$ that returns a similarity score for two sessions $s_1$ and $s_2$, we find the set of $K$ sessions that are most similar to the target session $s$.
+    
+    \item Now we compute a relevance score for each item $i$ for a given session $s$ and the neighbours $N$ of that sessions $s$. The relevance is given as:
+    \begin{equation}
+        score_{KNN}(i, s) = \sum_{n \in N} sim(s, n) \times 1_n(i)
+    \end{equation}
+    where $1_n(i) = 1$ if session n contains item i and 0 otherwise
+    
+    \item Final recommendations are gound by sorting the items in decreasing order of relevance score. 
+    
+    \item This approach is found to give competitive results in certain domains (music, e-commerce, workflow modelling)
+    
+    \item Improved results are shown to come with the use of set-based similarity functions like the binary cosine similarity or Jaccard similarity. This is due to the binary nature of data seen most often in recommender systems.
+    
+    \item Number of nearest neighbours $N$ is chosen based on the application domain.
+\end{itemize}
+
+\subsubsection{Pros and Cons of CF}
+\begin{itemize}
+    \item \textbf{Pros}: 
+    \begin{enumerate}
+        \item No knowledge about items is needed. This is useful for large e-commerce companies where catalogs comprise of $10^6$ items or more.
+        
+        \item CF systems learn over time when additional ratings are available. They are more flexible to new data than knowledge or content based systems
+    \end{enumerate}
+    
+    \item \textbf{Cons}:
+    \begin{enumerate}
+        \item Require the use of a large and returning user base to identify behavioural patterns
+        
+        \item CF systems struggle with new users and new items that are added to the catalogue. This is commmonly referred to as the cold-start problem
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{Procs and Cons of Nearest neighbour approaches}
+\begin{itemize}
+    \item \textbf{Pros}:
+    \begin{enumerate}
+        \item Easy to implement, debug and maintain. 
+        
+        \item Can make use of new ratings as soon as they are available (unlike model based aproaches that need to be re-trained on new data)
+        
+        \item Explainable outputs
+    \end{enumerate}
+    
+    \item \textbf{Cons}:
+    \begin{enumerate}
+        \item Computational complexity is high, not suitable to provide real-time recommendations
+        
+        \item Offline processing, parallelization mitigate this
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Implementation Considerations}
+\begin{itemize}
+    \item \textbf{Scalability}: engineering effort is needed to build scalable recommender systems
+    
+    \item \textbf{Freshness}: Continuous updates as and when new ratings are available. The concept of a three-tier pipeline architecture consisting of offline, nearline and online tiers has been proposed for this purpose, where the offline tier preioidically rebuilds the model, the nearline tier does near-real-time updates and the online tier performs the filtering based on user feedback and trends. 
+    
+    \item \textbf{UI}: User-centric evaluation approaches, some consider this to be more important than the backend algorithm
+    
+    \item \textbf{Data Integration}: Use multiple sources using feature engineering, use implicit signals instead of the explicit ratings, and manage large amounts of data. 
+    
+    \item \textbf{Business metrics}: RMSE is a common proxy measure, but click-through rates, choice time, user engagement and customer churn rates are used as business indicators.
+    
+    \item \textbf{Frameworks}: Apache PredictionIO ML server, TensorFlow, LensKit for Java, MyMediaLite for .NET, \texttt{sklearn} for Python and \texttt{rrecsys} for R, as well as plenty of public datasets. 
+\end{itemize}
+
+\subsection{Evaluation Considerations}
+\begin{itemize}
+    \item Most informative method is A/B Testing (2+ groups, each served different recommendations, compare the effects across groups)
+    
+    \item Large samples are needed to make the results of A/B testing statistically significant. Unexpected periodic effects lead to wrong conclusions and distortions
+    
+    \item Offline procedures are cheaper and more scalable to evaluate large number of recommender strategies.
+\end{itemize}
+
+\subsubsection{Offline Evaluation}
+\begin{itemize}
+    \item For matrix-completion tasks, offline evaluation is done in the form of K-fold cross validation on a hidden test dataset. 
+    
+    \item Typically the metrics chosen are the MAE or the RMSE. Many CF algorithms are designed to minimize the RMSE. Values cannot be compared across papers as different researchers use different data pre-processing.
+    
+    \item CF is also sometimes evaluated as a classification task. Hence measures such as precision (how many items recommended are relevant), recall (how many relevant items were recommended) and F-score are used.
+    
+    \item Precision and recall values are dependent on the items for which no ratings are available. Removing these items from consideration inflates the precision and recall scores. 
+    
+    \item Other measures of performance are diversity (based on pairwise similarity of recommended items), novelty and serendipity (recommending items outside of user's normal preference), but these may affect accuracy hence domain-wise analysis helps. 
+\end{itemize}
+
+\subsubsection{Evaluation Protocol for session-based systems}
+\begin{itemize}
+    \item The dataset of user actions logs is split into train and test sets, and the task is to predict the hidden actions.
+    
+    \item In Jannach 2015, the most recent 20\% of sessions are considered as test data. The sessions in the test set are then evaluated individually according to the given prediction task, which could be, e.g., to predict the purchase event in the 
+    
+    \item Two parameters are set for this: 
+    \begin{itemize}
+        \item The $v$ parameter indicates how many items of the current session to be revealed to the algorithm when making a prediction (measures how quickly algorithm adapts to current trends)
+        
+        \item The $p$ parameter indicates how many sessions that precede the current user session should be revealed to the algorithm (test how well the algorithm leverages info from preceding sessions)
+    \end{itemize}
+    
+    \item Accuracy measures include precision, recall, MRR and other measures that measure different dimensions. e.g. in ACM's REcSys challenge, predict whether or not a user will make a purchase in the current session and which item the user will purchase, hence the evaluation metric considers both aspects. 
+\end{itemize}
+\subsubsection{User Studies}
+\begin{itemize}
+
+    \item Accuracy of recommendations is not the only component that influences the performance of a system. 
+    
+    \item User studies play an important role in recommender system evaluation. 
+    
+    \item Real studies have shown contradictory results between precision measures and user studies.  For these reasons, industrial leaders often employ a development pipeline that involves three steps: 
+    \begin{enumerate}
+        \item Traditional offline experiments to identify failing approaches from the very beginning
+        
+        \item User studies to identify and better understand promising candidates
+        
+        \item A/B testing in the field as the third step in the assessment cycle.
+    \end{enumerate} 
+    
+    \item Lack of a representative sample of users, and differing intents from survey and real-world situations are the challenges faced when conducting user surveys.
+\end{itemize}
+
+\subsection{Datasets}
+\begin{itemize}
+    \item MovieLens and Netflix challenge datasets
+    
+    \item The increasing availability of data for different domains, different product categories and different sources will further intensify research on cross-domain recommendations and combining multiple user feedback sources. 
+\end{itemize}
+
+\end{document}

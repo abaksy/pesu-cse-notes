@@ -1,0 +1,181 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{a4paper, portrait, margin=1in}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition} % definition numbers are dependent on theorem numbers
+\newtheorem{exmp}{Example} % same for example numbers
+
+\title{Machine Intelligence (UE18CS303) \\
+\large Unit 3}
+\author{Aronya Baksy}
+\date{October 2020}
+
+\begin{document}
+    \maketitle
+\section{Ensemble Learning}
+\begin{itemize}
+    \item Ensemble Learning is a pseudo-algorithm wherein \textit{multiple learning} algorithms are combined in a way that offers better performance than the constituent algorithms alone. 
+    
+    \item Usually the models used in Ensemble learning are known as \textbf{weak learners}. Weak learners are those that deliver only slightly better performance than just randomly choosing predicting labels (which gives an accuracy of 0.5). 
+    
+    \item An ensemble learning consists of constructing multiple, diverse predictive models from \textit{adapted versions} of the training data (most often reweighted or resampled)
+    
+    \item Ensemble learning takes in multiple models having \textbf{high bias} (ie. very simple models), which when run together, produce a low-bias and low-variance classification output. 
+    
+    \item The combined hypothesis space of the combination of learners may not be completely overlapping with the hypothesis space of the individual constituent learners.
+    
+    \item Following are some key ideas on ensemble learning:
+    \begin{itemize}
+        \item Ensemble learning can reduce overfitting (overfitting is an outcome of high variance). 
+         
+        \item The confidence in the outcome of the ensemble model is
+        \begin{equation*}
+            C = 1 - (1-A)^n
+        \end{equation*}
+        Assuming that all learners have same accuracy $A$ (this is not a nice assumption in real world). 
+        
+        \item Let $n_1$ learners predict class $c_1$ and $n_2$ learners predict class  $c_2$. Let us assume with no loss of generality that $n_1 > n_2$. Then the probability that the class is actually class $c_1$ is:
+        \begin{equation*}
+            C(n, n_2) A^n (1-A)^{n-n_2}
+        \end{equation*}
+        where $n = max(n_1, n_2)$
+        
+        \item The final prediction from $N$ learners can be made using:
+        \begin{equation*}
+            y = \sum_{i=1}^n w_i d_i
+        \end{equation*}
+        Where $w_i$ is the weight given to the learner $i$ and $d_i$ is the prediction made by learner $i$. 
+        
+        \item The weights can be assigned in proportion to the accuracy of that learner, or in inverse proportion to their variance. 
+        
+        \item The most important constraint in ensemble learning is that all the learners must be \textit{independent} of one another in terms of their parameters and all effects on one another. It should be possible to train all the models completely in parallel.
+        
+        \item Learners can be made independent through learning techniques like \textbf{bagging} and \textbf{boosting}. 
+    \end{itemize}
+\end{itemize}
+
+\subsection{Bagging}
+\begin{itemize}
+    \item Let there be $k$ learners in the ensemble. From the original dataset of size $N$ (say),  we create $k$ datasets each of size $N$ by doing random sampling with replacement from the original. 
+    
+    \item The datasets will have approximately 63.2\% of the unique examples of the original data, with the rest being duplicates. 
+    
+    \item The learners are independently run on their corresponding datasets. The final output is either a vote or an average of all the individual model outcomes.
+    
+    \item The error calculation for a learner $L_i$ using the dataset $D_i$ is done by running the learner $L_i$ on the examples that are a part of $D$ (the original dataset) but not $D_i$. The total error is the average error on all learners. 
+    
+    \item The advantages of bagging are:
+    \begin{itemize}
+        \item Easy to implement and interpret 
+        
+        \item Models can grow in parallel. 
+        
+        \item Less variability than only DTs
+        
+        \item Heterogeneous data can be passed, no pre processing is needed. 
+    \end{itemize}
+\end{itemize}
+
+\subsection{Boosting}
+\begin{itemize}
+    \item In a boosting setup, learners run serially and they learn from the misclassifications of the previous learners.
+    
+    \item Each learner has its own weight (weight by variance or accuracy as above). 
+    
+    \item Each instance in the training dataset also has its own weight. When a learner $L_1$ makes a mistake on some instances, the next learner in the sequence $L_2$ is told to make other mistakes but it classifies the examples that $L_1$ went wrong in, correctly (this is done by assigning those instances a larger weight). 
+    
+    \item All the learners use identical datasets (the original data) but with different instance weights. 
+    
+    \item The final result is the weighted summation of all the individual learner results. 
+\end{itemize}
+
+\subsection{AdaBoost (Adaptive Boosting)}
+\begin{itemize}
+    \item Each instance in the training data (of size $N$ examples) has an initial weight $\frac{1}{N}$
+    
+    \item Let the function $I(a, b)$ be defined as
+    \begin{equation*}
+        I(a, b) = \begin{cases}
+            1 \text{ if } a \ne b\\
+            0 \text{ if } a=b
+        \end{cases}
+    \end{equation*}
+    
+    \item The error for the $m^{th}$ classifier is given as
+    \begin{equation}
+        \varepsilon_m = \sum\limits_{n=1}^{N} w_n^{(m)} I(y_n, t_n)
+    \end{equation}
+    
+    \item The weight of the $m^{th}$ classifier is given as:
+    \begin{equation}
+        \alpha_m = \frac{1}{2}ln \left (\frac{1 - \varepsilon_m }{\varepsilon_m} \right )
+    \end{equation}
+    
+    \item Let $N_m$ be defined as
+    \begin{equation*}
+        N_m = e^{\alpha_m}\sum w_i \text{ for wrongly classified examples } +  e^{-\alpha_m}\sum w_i\text{ for correctly classified examples}
+    \end{equation*}
+    
+    \item Now the instance weights are modified for use by the $m+1^{th}$ classifier, as follows
+    \begin{equation}
+        w_n^{(m+1)} = \begin{cases}
+            \frac{w_n^{(m)}}{N_m} e^{-\alpha_m} \text{ if }x_n^{(m)}\text{ is correctly classified}\\
+            \frac{w_n^{(m)}}{N_m} e^{+\alpha_m} \text{ if }x_n^{(m)}\text{ is wrongly classified}
+        \end{cases}
+    \end{equation}
+    
+    \item But, from equation (1) it is clear that 
+    \begin{align*}
+        \sum w_i \text{ for wrongly classified examples }  &= \varepsilon \\
+        \sum w_i \text{ for correctly classified examples } &= 1 - \varepsilon
+    \end{align*}
+    This gives
+    \begin{equation}
+        N_m = 2 \sqrt{\varepsilon(1-\varepsilon)}
+    \end{equation}
+    
+    \item Substituting this in equation (3) gives
+    \begin{equation}
+        w_n^{(m+1)} = \begin{cases}
+            \frac{w_n^{(m)}}{2(1-\varepsilon)} \text{ if }x_n^{(m)}\text{ is correctly classified}\\
+            \frac{w_n^{(m)}}{2\varepsilon} \text{ if }x_n^{(m)}\text{ is wrongly classified}
+        \end{cases}
+    \end{equation}
+    
+    \item Hence given a dataset $D$, number of learners as $T$ and the learning algorithm $A$, the AdaBoost Algorithm is summarized as:
+\end{itemize}
+
+\begin{algorithm}
+    \caption{AdaBoost}
+    \begin{algorithmic}
+        \Procedure{AdaBoost}{D, T, A}
+            \State $w_{i1} \gets \frac{1}{|D|}\text{ }\forall\text{ }x_i\in D$
+            \For{t =1 to T}
+                \State Run $A$ on dataset D with weights $w_{i1}$ for ith example to get a model $M_t$
+                \State $\varepsilon_m \gets \sum\limits_{n=1}^{N} w_n^{(m)} I(y_n, t_n) $
+                \If{$\varepsilon_t \le 0.5$}
+                    \State \textbf{break}
+                \EndIf
+                \State $\alpha_t \gets \frac{1}{2}ln \left (\frac{1 - \varepsilon_m }{\varepsilon_m} \right )$
+                \State $w_{t+1}i \gets \frac{w_{(t)i}}{2\varepsilon} \text{ for wrongly classified}$
+                \State $w_{t+1}i \gets \frac{w_{(t)i}}{2(1-\varepsilon)} \text{ for correctly classified}$
+            \EndFor
+            
+            \Return $M(x) \gets \sum_{i=1}^{T} \alpha_t M_t(x)$
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+
+\end{document}

@@ -1,0 +1,417 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage[margin=1in]{geometry}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition} % definition numbers are dependent on theorem numbers
+\newtheorem{exmp}{Example} % same for example numbers
+
+\title{Data Analytics (UE18CS312)\\
+\large Unit 3}
+\author{Aronya Baksy}
+\date{October 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Time Series Analysis}
+\begin{itemize}
+    \item Time series data is data on some response variable $Y_t$ observed at various points in time $t$. 
+    
+    \item Time Series data can be univariate (one variable at different points in time) or multivariate (multiple variables at different points in time). 
+\end{itemize}
+
+\subsection{Components of Time Series Data}
+\begin{itemize}
+    \item \textbf{Trend Component} ($T_t$): Consistent long-term upward/downward movement of the data.
+    
+    \item \textbf{Seasonal Component} ($S_t$): Fluctuations within a calendar year caused by events that occur at approximately the same time every year (eg: festivals, business practices like end-of-season sale, school holidays). 
+    
+    \item \textbf{Cyclical Component} ($C_t$): Cyclical component is fluctuation around the trend line that happens due to macro-economic changes such as recession, unemployment, etc. Periodicity of  cyclical fluctuations is not constant, while the periodicity of seasonal fluctuations is constant. 
+    
+    \item \textbf{Irregular Component} ($I_t$): Irregular component is the white noise or random uncorrelated changes that follow a normal distribution with 0 mean and constant Standard Deviation.
+\end{itemize}
+
+\subsection{Time Series Models}
+\begin{itemize}
+    \item An additive model is of the form:
+    \begin{equation*}
+        Y_t = T_t + S_t + C_t + I_t
+    \end{equation*}
+    
+    \item This assumes that $S_t$ and $C_t$ are independent of $T_t$, which is often not a valid observation in the real world.
+    
+    \item A multiplicative model is of the form:
+    \begin{equation*}
+        Y_t = T_t  S_t  C_t  I_t
+    \end{equation*}
+    
+    \item These are more often used, and closer to the real world behaviour. The simpler form
+    \begin{equation*}
+        Y_t = T_t  S_t
+    \end{equation*}
+    
+    \item Additive models are appropriate if $S_t$ is fixed while the mean of the data changes, while multiplicative models are more appropriate if $S_t$ is correlated with the mean of the data. 
+\end{itemize}
+
+\subsection{Error Metrics in TSA}
+\begin{itemize}
+    \item \textbf{Mean Absolute Error}: Given by
+    \begin{equation*}
+        MAE = \sum_{t=1}^{n} \frac{|Y_t - F_t|}{n}
+    \end{equation*}
+    
+    \item \textbf{Mean Absolute Percentage Error}: Given by
+    \begin{equation*}
+        MAPE = \frac{1}{n} \sum_{t=1}^{n} \frac{|Y_t - F_t|}{Y_t}
+    \end{equation*}
+    
+    \item \textbf{Mean Squared Error}: Given by
+    \begin{equation*}
+        MSE = \frac{1}{n} \sum_{t=1}^{n} (Y_t - F_t)^2
+    \end{equation*}
+    
+    \item \textbf{Root Mean Squared Error}: Given by
+    \begin{equation*}
+        RMSE = \sqrt{\frac{1}{n} \sum_{t=1}^{n} (Y_t - F_t)^2}
+    \end{equation*}
+\end{itemize}
+
+\section{Forecasting Techniques}
+\subsection{Moving Average Method}
+\begin{itemize}
+    \item The future value is an average (weighted or not) of the past $N$ data points in the series. 
+    
+    \item The \textbf{Simple Moving Average} (SMA) is represented as: 
+    \begin{equation}
+        F_{t+1} = \frac{1}{n} \sum_{k= t+1-N}^{t} Y_k
+    \end{equation}
+    
+    \item The \textbf{Weighted Moving Average} is given as:
+    
+    \begin{equation}
+        F_{t+1} = \sum_{k= t+1-N}^{t} W_k Y_k
+    \end{equation}
+    
+    where $W_k$ is the weight given to the kth point in the series. 
+    
+    \item In a weighted moving average, past observations are given differential weights (usually the weights decrease as the data becomes older). The last $N$ weights must follow the condition
+    \begin{equation*}
+        \sum_{k= t+1-N}^{t} W_k = 1
+    \end{equation*}
+\end{itemize}
+
+\subsection{Single Exponential Smoothing}
+\begin{itemize}
+    \item Single Exponential smoothing allows the older samples to be assigned smaller decaying weights. The formula is given by
+    \begin{equation}
+        F_{t+1} = \alpha Y_t + (1-\alpha) F_t
+    \end{equation}
+    
+    \item Recursively expanding this, we get
+    \begin{equation*}
+        F_{t+1} = \alpha Y_t + \alpha(1-\alpha) Y_{t-1} +  \alpha(1-\alpha)^2 Y_{t-2} + ... + \alpha(1-\alpha)^{t-1} Y_{1} + (1-\alpha)^t F_1
+    \end{equation*}
+    
+    \item The initial forecasted value $F_1$ can be assumed equal to $Y_1$. 
+    
+    \item SES has the advantages that it uses the entire historical data (unlike MA that uses only the last $N$ data points), and that it assigns decreasing weights to older weights.
+    
+    \item The disadvantages of SES are that it lags behind the trend as it uses past observations, and that forecast bias and systematic errors occur when the observations exhibit strong trend or seasonal patterns.
+\end{itemize}
+
+\subsection{Double Exponential Smoothing (Holt's Method)}
+\begin{itemize}
+    \item Double exponential smoothing uses two equations to forecast the future values of the time series, one for forecasting the level (short term average value) and another for capturing the trend.
+    
+    \item The \textbf{Level Equation} is given as:
+    \begin{equation}
+        L_t = \alpha Y_t + (1-\alpha)F_t
+    \end{equation}
+    
+    \item The \textbf{Trend Equation} is given as:
+    \begin{equation}
+        T_t = \beta (L_t - L_{t-1}) + (1 - \beta)T_{t-1}
+    \end{equation}
+    
+    \item The forecast at time $t+1$ and time $t+n$ is given as:
+    \begin{align*}
+        F_{t+1} &= L_t + T_t\\
+        F_{t+n} &= L_t + nT_t
+    \end{align*}
+\end{itemize}
+
+\subsection{Triple Exponential Smoothing (Holt-Winter's Model)}
+\begin{itemize}
+    \item This method is used to forecast for time series where seasonal components are present. It uses threee equations for the level, the trend and the seasonal components.  
+    
+    \item Let $c$ is the number of seasons (if it is monthly seasonality, then $c = 12$; in case of quarterly seasonality $c = 4$; and in case of daily data $c = 7$).
+    
+    \item The \textbf{Level Equation} is given as:
+    \begin{equation}
+        L_t = \alpha \frac{Y_t}{S_{t-c}} + (1-\alpha) (L_{t-1} + T_{t+1})
+    \end{equation}
+    
+    \item The \textbf{Trend Equation} is given as:
+    \begin{equation}
+        T_t = \beta (L_{t} + L_{t-1}) + (1-\beta) T_{t-1}
+    \end{equation}
+    
+    \item The \textbf{Seasonal Equation} is given as:
+    \begin{equation}
+        S_t = \gamma \frac{Y_t}{L_t} + (1-\gamma) S_{t-c}
+    \end{equation}
+    
+    \item The forecast at time $t+1$ is given as:
+    \begin{equation}
+        F_{t+1} = (L_t + T_t)\times S_{t+1-c}
+    \end{equation}
+    
+    \item The inital value of $L_t$ can be calculated as either
+    \begin{equation*}
+        L_t = Y_t
+    \end{equation*}
+    or
+    \begin{equation*}
+        L_t = \frac{1}{c} (Y_1 + Y_2 + Y_3 + ... + Y_c)
+    \end{equation*}
+    
+    \item The initial value of $T_t$ is calculated as the average of seasonal indices, given by:
+    \begin{equation*}
+        T_t = \frac{1}{c} \left ( \frac{Y_t - Y_{t-c}}{12} + \frac{Y_{t-1} - Y_{t-1-c}}{12} + .. + \frac{Y_{t-c+1} - Y_{t-2c+1}}{12} \right )
+    \end{equation*}
+    
+    \item The following algorithm is used to calculate the initial value for $S_t$.
+    \begin{enumerate}
+        \item Calculate season-wise averages $\overline{Y}_1,\overline{Y}_2, \overline{Y}_3,..,\overline{Y}_c$. 
+        
+        \item Calculate the average of season averages $\overline{\overline{Y}}$
+        
+        \item The seasonality index of the season $k$ is given as $\overline{Y}_k / \overline{\overline{Y}}$
+    \end{enumerate}
+\end{itemize}
+
+\section{Regression Models for Forecasting}
+\begin{itemize}
+    \item The forecasted value at time $t$, $F_t$ can be written as:
+    \begin{equation}
+        F_t = \beta_0 + \beta_1 X_{1t} + \beta_2 X_{2t} + ... + \beta_k X_{kt} + \varepsilon_t
+    \end{equation}
+    
+    where $X_{1t}, X_{2t},...$ are the values of the variables $X_1, X_2$ at time t. 
+    
+    \item All regression models must be passed through the Durbin-Watson test to prove that there is no autocorrelation. 
+\end{itemize}
+
+\subsection{Regression Model for Forecasting with Seasonality}
+\begin{itemize}
+    \item Divide each data point by the seasonality index of its season ($Y_{d, t} = Y_t/S_t$). This produces a de-seasonalized data $Y_{d,t}$ from the original $Y_t$
+    
+    \item Build a regression model on the de-seasonalized data.
+    
+    \item Forecast for time $t+1$ is $F_{t+1} = F_{d,t+1}*S_{t+1}$
+\end{itemize}
+\subsection{Conditions for a stationary time series}
+\begin{itemize}
+    \item The mean values of $Y_t$ at different values of $t$ are constant.
+    \item The variances of $Y_t$ at different time periods are constant (Homoscedasticity).
+    \item The covariances of $Y_t$ and $Y_{t-k}$ for different lags depend only on k and not on time t.
+\end{itemize}
+
+\section{Auto-Regressive Models}
+\begin{itemize}
+    \item Auto regression is regression of a variable on itself measured at different time points.
+    
+    \item An AR(1), meaning Auto regression with lag 1, process can be written as
+    \begin{equation}
+        Y_{t+1} = \beta Y_t + \varepsilon_{t+1}
+    \end{equation}
+    
+    \item A general $AR(p)$ process with lag $p$ is written as
+    \begin{equation}
+        Y_{t+1} = \beta_0 + \beta_1 Y_{t} + \beta_2 Y_{t-1} + ... + \beta_p Y_{t-p+1} + \varepsilon_{t+1}
+    \end{equation}
+    
+    \item This equation can be rewritten as
+    \begin{equation}
+        Y_{t+1} - \mu = \beta^t (Y_0 - \mu) + \sum_{k=1}^{t-1} (\beta^{t-k} \varepsilon_k) + \varepsilon_{t+1}
+    \end{equation}
+    
+    \item The OLS estimate of $\beta$ is
+    \begin{equation*}
+        \beta = \frac{\sum\limits_{t=2}^{n} (Y_t - \mu)(Y_{t-1}-\mu)}{\sum\limits_{t=2}^{n}(Y_{t-1}-\mu)^2}
+    \end{equation*}
+\end{itemize}
+
+\subsection{Model Parameter Estimation for AR Model}
+\begin{itemize}
+    \item The \textit{auto correlation}  between $k$ lags of $Y$ is given as
+    \begin{equation*}
+        \rho_k = \frac{\sum\limits_{t=k+1}^{n} (Y_{t-k} - \overline{Y})(Y_t - \overline{Y})}{\sum\limits_{t=1}^{n} (Y_t - \overline{Y})^2}
+    \end{equation*}
+    
+    \item It is the correlation between $Y_t$ and $Y_{t-k}$, ie. different values of $Y$ that are $k$ time apart. 
+    
+    \item A plot of this auto correlation value $\rho_k$ for different integer values of $k$ is called the \textbf{autocorrelation function (ACF)}
+    
+    \item The \textit{partial autocorrelation} $\rho_{pk}$ is the correlation between $Y_t$ and $Y_{t-k}$, ie. different values of $Y$ that are $k$ time apart, with the intermediate values $Y_{t-1}, Y_{t-2}, .., Y_{t-k+1}$ removed (partial out).
+    
+    \item A plot of partial auto correlation with differnet values of $k$ is called the \textbf{Partial Autocorrelation Function (PACF)}
+    
+    \item The hypothesis test for ACF is:
+    \begin{itemize}
+        \item \textbf{Null Hypothesis} $H_0$: $\rho_k = 0$
+        \item \textbf{Alternate Hypothesis} $H_1$: $\rho_k \ne 0$
+    \end{itemize}
+    
+    \item The hypothesis test for PACF is:
+    \begin{itemize}
+        \item \textbf{Null Hypothesis} $H_0$: $\rho_{pk} = 0$
+        \item \textbf{Alternate Hypothesis} $H_1$: $\rho_{pk} \ne 0$
+    \end{itemize}
+    
+    \item The null hypotheses are rejected when $\rho_{k} > 1.96/\sqrt{n}$ and $\rho_{pk} > 1.96/\sqrt{n}$. The lines in PACF and ACF plots represent these confidence limits
+    
+    \item Rule to determine the value of $p$ in $AR(p)$ from ACF and PACF plots are:
+    \begin{itemize}
+        \item In PACF, $\rho_{pk} > 1.96/\sqrt{n}$ for the first $p$ lags, then cuts off to 0.
+        
+        \item The ACF decreases exponentially. 
+    \end{itemize}
+\end{itemize}
+
+\section{Moving Average Process}
+\begin{itemize}
+    \item A moving average process $MA(q)$ of lag $q$ is written as
+    \begin{equation*}
+        Y_{t+1} = \mu + \alpha_1 \varepsilon_t + \alpha_2 \varepsilon_{t-1} + ... + \alpha_q \varepsilon_{t-q+1} + \varepsilon_{t+1}
+    \end{equation*}
+    
+    \item \item Rule to determine the value of $q$ in $MA(q)$ from ACF and PACF plots are:
+    \begin{itemize}
+        \item In ACF, $\rho_{k} > 1.96/\sqrt{n}$ for the first $q$ lags, then cuts off to 0.
+        
+        \item The PACF decreases exponentially. 
+    \end{itemize}
+\end{itemize}
+
+\section{ARMA Model}
+\begin{itemize}
+    \item $ARMA(p,q)$ is a linear combination of $AR(p)$ and $MA(q)$. The general form of $ARMA(p, q)$ is:
+    \begin{equation*}
+        Y_{t+1} = (\beta_0 + \beta_1 Y_{t} + \beta_2 Y_{t-1} + ... + \beta_p Y_{t-p+1} + \varepsilon_{t+1}) + (\mu + \alpha_1 \varepsilon_t + \alpha_2 \varepsilon_{t-1} + ... + \alpha_q \varepsilon_{t-q+1} + \varepsilon_{t+1}) + \varepsilon_{t+1}
+    \end{equation*}
+    
+    \item Rule to determine the value of $p, q$ in $ARMA(p, q)$ from ACF and PACF plots are:
+    \begin{itemize}
+        \item In ACF, $\rho_{k} > 1.96/\sqrt{n}$ for the first $q$ lags, then cuts off to 0.
+        
+        \item In PACF, $\rho_{pk} > 1.96/\sqrt{n}$ for the first $p$ lags, then cuts off to 0.
+    \end{itemize}
+\end{itemize}
+
+\section{ARIMA Model}
+\begin{itemize}
+    \item Autoregressive \textit{Integrated} Moving Average (ARIMA) is a model that is used for non-stationary data.
+    
+    \item Model building of $ARIMA(p, d, q)$:
+    \begin{enumerate}
+    
+        \item Plot ACF and PACF 
+        
+        \item If series is stationary, then model is $ARIMA(p, 0, q)$, the same as $ARMA(p, q)$. 
+        
+        \item If series is not stationary, find the order of differencing $d$ required to make the series stationary. The model is $ARIMA(p, d, q)$
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Differencing Method}
+\begin{itemize}
+    \item Differencing is a method used to convert the non-stationary time series into stationary. 
+    \item For $d=1$, the first difference is given as
+    \begin{equation*}
+        \nabla Y_t = Y_t - Y_{t-1}
+    \end{equation*}
+    
+    \item The second order difference, corresponding to $d=2$ is given as:
+    \begin{equation*}
+        \nabla^2 Y_t = \nabla(\nabla Y_t) = Y_t - 2Y_{t-1} + Y_{t-2}
+    \end{equation*}
+    
+    \item In most cases, $d \le 2$ is sufficient. 
+\end{itemize}
+\subsection{Dickey-Fuller Test for Stationarity}
+\begin{itemize}
+    \item Considering the $AR(1)$ process below, 
+    \begin{equation*}
+        Y_{t+1} = \beta Y_t + \varepsilon_{t+1}
+    \end{equation*}
+    
+    \item The Dickey Fuller test is a test for stationarity of the time series. $AR(1)$ can now be written as
+    \begin{equation*}
+        Y_{t+1} - Y_{t} = (\beta -1 ) Y_t + \varepsilon_{t+1} = \psi Y_t + \varepsilon_{t+1} 
+    \end{equation*}
+    \begin{itemize}
+        \item \textbf{Null Hypothesis} $H_0$: $\psi = 0$ (Non-stationary)
+    \item \textbf{Alternate Hypothesis} $H_1$: $\psi < 0$ (Stationary)
+    \end{itemize}
+    
+    \item The Dickey-Fuller test statistic is given as
+    \begin{equation*}
+        D = \frac{\psi}{S_e(\psi)}
+    \end{equation*}
+\end{itemize}
+
+\subsection{Augmented Dickey-Fuller Test}
+\begin{itemize}
+    \item Instead of only one lag, $p$ lags of the $AR(1)$ process are considered as when $\varepsilon_{t+1}$ is not entirely random (white noise), then there may be more significant lags. 
+    
+    \item Now the $AR(1)$ is written as
+    \begin{equation*}
+        Y_{t+1} - Y_{t} = \psi Y_t + \sum_{i=0}^p \alpha_i Y_{t-i} + \varepsilon_{t+1}
+    \end{equation*}
+    
+    \begin{itemize}
+        \item \textbf{Null Hypothesis} $H_0$: $\psi = 0$ (Non-stationary)
+    \item \textbf{Alternate Hypothesis} $H_1$: $\psi < 0$ (Stationary)
+    \end{itemize}
+\end{itemize}
+
+\subsection{Ljung-Box Test for Autocorrelation}
+\begin{itemize}
+    \item The hypothesis are:
+    \begin{itemize}
+        \item \textbf{Null Hypothesis} $H_0$: Model does not show lack of fit
+    \item \textbf{Alternate Hypothesis} $H_1$: Model shows lack of fit
+    \end{itemize}
+    
+    \item The test statistic $Q$ is given as:
+    \begin{equation}
+        Q = n(n+2)\sum_{k=1}^{m}\frac{\rho_k^2}{n-k}
+    \end{equation}
+    where $n$ is the lengtjh of the time series, $\rho_k$ is the autocorrelation value for $k$ lags, and $m$ is the total number of lags. 
+    
+    \item Q-statistic is an approximate chi-square distribution with $m - p - q$ degrees of freedom where $p$ and $q$ are the AR and MA lags.
+\end{itemize}
+
+\subsection{Theil's Coefficient: Power of a forecasting Model}
+\begin{itemize}
+    \item The power of forecasting model is a comparison between Naïve forecasting model and the model developed.
+    
+    \item In the Naïve forecasting model, the forecasted value for the next period is same as the last period’s actual value ($F_{t+1} = Y_t$).
+    
+    \item Theil's coefficient $U$ is the ratio of MSE of forecasting model to the naïve model.
+    \begin{equation}
+        U = \frac{\sum\limits_{i=1}^n (Y_{t+1} - F_{t+1})^2}{\sum\limits_{i=1}^n (Y_{t+1} - Y_{t})^2}
+    \end{equation}
+    
+    \item The value of $U < 1$ indicates that forecasting model is better than the Naïve forecasting model, while $U > 1$ indicates that the forecasting model is not better than Naïve model
+\end{itemize}
+\end{document}

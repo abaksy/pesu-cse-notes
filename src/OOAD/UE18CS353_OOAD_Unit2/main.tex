@@ -1,0 +1,554 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, portrait, margin=1in]{geometry}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+
+\title{OOAD \& Software Engineering (UE18CS353) \\
+    Unit 2}
+\author{Aronya Baksy}
+\date{March 2021}
+
+\begin{document}
+
+\maketitle
+\section{Software Architecture and Design}
+\begin{itemize}
+    \item \textbf{Software Architecture}: high level decomposition of software into components and characterization of the interaction between the components
+    
+    \item \textbf{Software Design} involves further decomposition of components, as well as identifying detailed functionality and attributes of each component.
+    
+    \item Design involves implementation details:
+    \begin{enumerate}
+        \item Data structures/algorithms used for actual implementation
+        
+        \item User interface details for interaction with system
+        
+        \item Design patterns to be used (structural/behavioural/creational)
+    \end{enumerate}
+\end{itemize}
+\subsection{Attributes of Software Architecture}
+\begin{itemize}
+    \item Address all stakeholder perspectives, separate stakeholder concerns
+    
+    \item Realize all use cases and user scenarios defined at the requirement phase
+    
+    \item Drives quality attributes (non-functional reqs like availability, security)
+    
+    \item Overall vision of system functionality that is separate from actual implementation detail
+\end{itemize}
+
+\subsection{Factors that influence Software Architecture}
+\begin{itemize}
+    \item Functionality of the system
+    
+    \item Legal and regulatory obligations
+    
+    \item Constraints on cost, skill levels of staff, technology available
+    
+    \item Audience, user environment/experience that is planned, usage characteristics
+\end{itemize}
+
+\subsection{Software Design}
+\subsubsection{Enablers}
+\begin{itemize}
+    \item \textbf{Abstraction}: focus on essential properties, hide implementation details as far as possible
+    
+    \item \textbf{Modularity}: Extent to which a large module can be decomposed. 
+    \begin{itemize}
+        \item \textbf{Coupling} is the extent to which modules are interdependent 
+        
+        \item \textbf{Cohesion} is a measure of the degree to which the elements of the module are functionally related (a measure of how focussed are the elements of a single module towards accomplishing a single task)
+        
+        \item Ideal properties are low coupling and high cohesion
+    \end{itemize} 
+    
+    \item \textbf{Information Hiding}: Make use of the need-to-know principle, as well as encapsulation, separation of interface and implementation
+    
+    \item \textbf{Simple Design}: both inter-module and intra-module, limit complexity of modules
+    
+    \item \textbf{Hierarchical structure}
+\end{itemize}
+
+\subsubsection{Issues to be handled}
+\begin{itemize}
+    \item Concurrency, event handling
+    
+    \item Distribution and organization of components
+    
+    \item Non-functional requirements (fault tolerance etc.)
+    
+    \item Error handling, exception handling
+    
+    \item Interaction, presentation
+    
+    \item Data presentation
+\end{itemize}
+\subsection{Differences between Software Architecture and Design}
+\begin{tabular}{|p{0.45\linewidth}|p{0.45\linewidth}|}
+    \hline
+    \textbf{Architecture} &  \textbf{Design} \\
+    \hline
+    Big picture decisions on frameworks, tools, languages, scope, goals and high level methodologies & Small picture decisions on implementation, programming idioms, code organization, design patterns, local constraints on requirements \\
+    \hline
+    Abstract decisions on strategy, structure and purpose & Tactical decisions on implementation, practice (more concrete) \\
+    \hline
+    Structure of the system, software components, visible properties of those components, and the relationships between them & Problem-solving \& planning for a software solution internal to the system \\
+    \hline
+    High impact and tough to change & Lesser (more localized to one stage) impact and easier to change \\
+    \hline 
+    More influence on non-functional requirements & More influence on functional requirements \\
+    \hline
+\end{tabular}
+
+\subsection{Approaches to decomposition}
+\subsubsection{Layering Approach}
+\begin{itemize}
+    \item Organize software into layers that are dependent on each other in a sequence, each layer solving one task
+    
+    \item Allows for easy customization, fault isolation, acceptance testing and easy development
+\end{itemize}
+
+\subsubsection{Distribution between Computing Resources}
+\begin{itemize}
+    \item Each process in a system has its own thread of control (and associated resources)
+    
+    \item Used when multiple clients need access
+    
+    \item Allows greater fault isolation, more separation of concerns, redundancy which allows high availability
+\end{itemize}
+
+\subsubsection{Exposure}
+\begin{itemize}
+    \item Based on what services are exposed and what services are consumed by a component 
+\end{itemize}
+
+\subsubsection{Functionality}
+Based on problem domain and the logical separation of functionalities (e.g.: modules for login, customer service, inventory)
+
+\subsubsection{Generality}
+\begin{itemize}
+    \item Generalize components to be reused in other applications or other modules
+\end{itemize}
+
+\subsubsection{How to Decompose?}
+\begin{itemize}
+    \item Divide and conquer
+    
+    \item Stepwise refinement (start simple, iteratively refine to get final module)
+    
+    \item Top-down approach: Start from a top-level overview, then detail each component
+    
+    \item Bottom-up approach: Specify individual components and compose them into modules
+    
+    \item Information hiding using encapsulation, separation of implementation and interface
+\end{itemize}
+
+\section{Design Methods}
+\subsection{Data Flow Method}
+\begin{itemize}
+    \item A two-step process, consisting of:
+    \begin{enumerate}
+        \item \textbf{Structured Analysis} (SA) outputs aogical design, drawn as a set of data flow diagrams
+        
+        \item \textbf{Structured Design} (SD) transforms the logical design into a program structure represented as a set of structure charts
+    \end{enumerate}
+    
+    \item A \textbf{data flow diagram} (DFD) has the following components:
+    \begin{itemize}
+        \item \textbf{External Entity}: Source/Destination of a transaction, outside the domain of the DFD. They are represented as rectangles
+        
+        \item \textbf{Process}: Transforms data and gives transformed output. Represented as a rectangle
+        
+        \item \textbf{Data Store}: Represents data storage and its manipulation. They lie between processes, represented with parallel lines
+        
+        \item \textbf{Data Flow}: Direction of data transfer between processes, entities and data stores. Represented using arrows. 
+    \end{itemize}
+    
+    \item Decomopse DFD into more granular and low-level diagrams, then build a \textbf{minispec} (minimized description of processes in the DFD for communication of the algorithm)
+    
+    \item The contents of the minimal decomposed DFD are maintained in a \textbf{data dictionary}. Data dictionary symbols are:
+    \begin{itemize}
+        \item $[]$: Include one of the enclosed options
+        
+        \item $+$: AND
+        
+        \item $|$: Separate options
+        
+        \item $()$: Enclosed options are optional
+    \end{itemize}
+    
+    \item Sample data dictionary:
+    \begin{itemize}
+        \item borrow-request = client-id + book-id 
+        
+        \item return-request = client-id + book-id 
+        
+        \item log-data = client-id + [borrow $|$ return] + book-id 
+        
+        \item book-id = author-name + title + (isbn) +  [proc $|$ series $|$ other] 
+    \end{itemize}
+    
+    \item The SA phase outputs the DFD, minispec and data dictionary. The SD phase takes these as input and transitions them into the hierarchical structure charts
+    
+    \item Heuristics used for this transition are based on coupling and cohesion. Most commonly used heuristic is \textit{transform-centered}
+    
+    \item In this heuristic, the procedure is:
+    \begin{itemize}
+        \item Trace input through the DFD until it is no longer considered as an input, same for output
+        
+        \item The in-between bubble is considered as the transform
+        
+        \item Processes in DFD become components of structure chart. Data flows in DFD become component invocations (the arrows are in the opposite direction in the two diagrams)
+    \end{itemize}
+\end{itemize}
+
+\subsection{Booch's Method (for OO Development)}
+\begin{itemize}
+    \item Consists of an Object Modelling Language (currently most widely used is UML, Unified Modelling Language), an iterative development process and a set of recommended practices
+    
+    \item The \textbf{macro process} consists of:
+    \begin{itemize}
+        \item \textbf{Conceptualization}: Identify core functional requirements, 
+        
+        \item \textbf{Analysis}: Develop a model of the desired behaviour
+        
+        \item \textbf{Design}: Create architecture
+        
+        \item \textbf{Evolution}: for implementation
+        
+        \item \textbf{Maintenance}: post delivery
+    \end{itemize}
+    
+    \item The \textbf{Macro} process consists of:
+    \begin{itemize}
+        \item Identify classes, objects
+        
+        \item Identify semantics and relationships between the above
+        
+        \item Specify all interfaces and their implementation
+    \end{itemize}
+\end{itemize}
+
+\section{Architectural Views, Styles and Design Patterns}
+\begin{tabular}{|p{0.3\linewidth}|p{0.3\linewidth}|p{0.3\linewidth}|}
+    \hline
+    \textbf{Architectural View} & \textbf{Architectural Style} & \textbf{Design Pattern}  \\
+    \hline
+    Ways of describing Software Architecture to all Stakeholders from different perspectives & Organization and structuring of subsystems and components & Known, proven solution to a design problem that organizes subsystems \\
+    \hline
+    UI View, Process View & Client-Server, Pipe-filter, P2P & MVC \\
+    \hline
+\end{tabular}
+
+
+\subsection{Architectural Views}
+\subsubsection{Module View}
+\begin{itemize}
+    \item Structure the system as a set of modules (each having some functional responsibility)
+    
+    \item An Architect enumerates what each unit will have to do and assigns each unit to a module
+    
+    \item Larger modules may be decomposed into smaller units for easy change management
+    
+    \item Used primarily for organization and documentation, less emphasis on actual runtime environment
+\end{itemize}
+
+\subsubsection{Component and Connector View}
+\begin{itemize}
+    \item Runtime view of the software, dynamic
+    
+    \item Components (processing elements) are software elements that transform data from input to output (either computation, or server that responds to requests, or a controller that governs a sequence of events)
+    
+    \item Data elements store information that is to be processed
+    
+    \item Connecting elements connect the processing and data elements logically or physically (e.g.: RPC)
+\end{itemize}
+
+\subsubsection{Allocation View}
+\begin{itemize}
+    \item \textbf{Deployment Structure} shows how the software components are assigned to the available hardware in terms of two relationships:
+    \begin{itemize}
+        \item The "allocated-to" relation indicates which hardware element contains the particular software element
+        
+        \item The "migrates-to" relation indicates dynamic allocation of hardware elements
+    \end{itemize}
+    This structure allows one to reason about attributes such as performance, consistency, and availability. It is of particular use in distributed/parallel systems
+    
+    \item The \textbf{Implementation Structure} indicates how software is mapped onto file structures in the system's development, integration, or configuration control environments
+
+    \item \textbf{Work Assignment Structure} shows who is doing what and where (indicates functional commonalities within a team)
+\end{itemize}
+
+\subsubsection{Krutchen's 4+1 View}
+\begin{itemize}
+    \item \textbf{Use case view}: exposing the requirements of the system or the scenarios
+   
+    \item\textbf{ Design view}: Exposes vocabulary of the problem space and the solution space using Class Diagrams, Sequence diagrams etc
+
+    \item \textbf{Process view} encompasses the runtime behavior of the system (in terms of threads and processes). Addresses performance, Concurrency etc.
+
+    \item \textbf{Implementation view}: Addresses the realization of the system. UML diagrams like package diagrams are used
+
+    \item \textbf{Deployment view}: Focuses on system engineering issues
+\end{itemize}
+
+\subsection{Architectural Styles}
+\begin{itemize}
+    \item A pattern for organizing the components in an architecture, characterized by the notable features (addresses structure and behvaiour of system)
+    
+    \item Architectural Styles provide:
+    \begin{itemize}
+        \item \textbf{Vocabulary}: Set of design elements to be used (e.g.: client, server, database, etc.)
+        
+        \item \textbf{Design Rules}: Dictate connection of processing elements
+        
+        \item \textbf{Semantic Interpretation} of the connected design elements
+        
+        \item \textbf{Analysis} such as deadlock detection/scheduling
+    \end{itemize}
+\end{itemize}
+
+
+
+\subsection{Architectural Patterns}
+Architectural Patterns deal with naming and organization of layers in a layered software
+\subsubsection{Single Layer Architecture Pattern}
+\begin{itemize}
+
+    \item Also referred to as monolithic architecture
+    
+    \item Consists of a single application layer that supports the user interface, the business rules, and data processing
+    
+    \item e.g.: MS Word, client-server applications
+\end{itemize}
+
+\subsubsection{2-Layer Architecture}
+\begin{itemize}
+    \item Approach 1: UI and business rules on one system, data storage and processing on another
+    
+    \item Approach 2: UI on one system, business rules and data operations on another system 
+    
+    \item Procedures on the server can be either explicitly called or implicitly called using triggers
+    
+    \item e.g.: SQL server 
+\end{itemize}
+
+\subsubsection{3-layer Architecture}
+\begin{itemize}
+    \item Display layer contains the UI, Logic layer contains business logic and State layer contains the data storage and processing system
+    
+    \item Clients never directly access the state layer
+\end{itemize}
+
+\subsubsection{Client-Server Architecture}
+\begin{itemize}
+    \item The client is a single-user workstation that provides UI interface and presentation logic, along with a connection to the server
+    
+    \item The server is a high-powered industrial machine with shared memory that serves client requests (implements the business logic and database connections needed for the same)
+\end{itemize}
+
+\subsection{Design Patterns}
+\begin{itemize}
+    \item A general, reusable solution to a commonly occurring problem within a given context in software design
+    
+    \item A named collection of architectural decisions or design approaches which results in a successful solution
+\end{itemize}
+\subsubsection{OO Design Patterns}
+\begin{itemize}
+    \item Creational Patterns deal with object creation (e.g.: Singletion, Builder, Factory)
+    
+    \item Structural Patterns deal with composition of objects (e.g.: Adaptor, Bridge, Facade, Proxy)
+    
+    \item Behavioural Patterns deal with interaction of objects (e.g.: Interpereter, Iterator)
+    
+    \item Distributed Patterns deal with interfaces for distributed systems (e.g.: Skeleton, class stubs)
+\end{itemize}
+
+\subsubsection{Singleton Pattern}
+\begin{itemize}
+    \item An example of a creational design pattern. Used when only one instance of a class has to be created and that object is the only access point for that class
+    
+    \item The single instance is accessed using a \texttt{getInstance()} method in the class. The \texttt{getInstance()} method creates the instance if not existing, or returns a reference to the existing instance
+    
+    \item Used for centralized management of global resource
+    
+    \item e.g.: Logging class, config class, window manager, DB connection manager
+\end{itemize}
+\subsubsection{Procedural Patterns}
+\begin{itemize}
+    \item \textbf{Structural Decomposition Pattern} breaks down large systems into communicating smaller subsystems 
+    
+    \item \textbf{Work Organization Pattern} defines how the subsystems communicate (e.g.: Client/Server, P2P)
+    
+    \item \textbf{Access Control Pattern} defines access to components and services ususally via a proxy
+    
+    \item \textbf{Management Pattern} defines how to handle homogeneous collections as a whole (e.g.: command processor, view handler)
+    
+    \item \textbf{Communication Pattern} defines how to organize communication across modules (e.g.: forward-receive, pub-sub)
+\end{itemize}
+
+\subsubsection{Anti-Patterns}
+\begin{itemize}
+    \item Situations that are undesirable and best avoided are defined as anti-patterns
+    
+    \item In Agile approaches, refactoring is applied when anti-patterns are encountered
+    
+    \item e.g.: \textbf{God class} that holds too much responsibility, \textbf{Lava flow} is dead code that gets carried on for a long time 
+\end{itemize}
+
+\section{Class Diagram}
+Represents classes, relationships between classes, and attributes + operations of classes.
+\subsection{Object}
+\begin{itemize}
+    \item A concept/abstraction/something with identity that has a specific meaning towards an application
+    
+    \item They have an identity that is unchanged through their lifetime. Can be concrete or abstract
+    
+    \item Objects play different roles wrt one another. These roles include multiplicity
+\end{itemize}
+
+\subsection{Class}
+\begin{itemize}
+    \item Group of objects that share similar properties, behaviours, relationships and semantics
+    
+    \item Classes have responsibilities that an object of that class should be able to fulfill
+    
+    \item Classes abstract objects, hence generalize from specific cases to smaller number of generic cases
+    
+    \item In the class diagram, a class is represented with a vertical set of stacked boxes:
+    \begin{itemize}
+        \item Top box includes class name
+        
+        \item Second box has attributes (name, datatype, visibility)
+        
+        \item Third box has operations (methods, specified along with arguments, type of arguments and return type)
+        
+        \item Bottom box has responsbilities of that class
+    \end{itemize}
+    
+    \item A responsibility is a contract or obligation of a class to perform a particular service (represented as text phrases) 
+    
+    \item \textbf{Class Responsibility Collaborator} or CRC Cards are used for brainstorming during the low level design. Each member of the team writes their own CRC card and the results are combined
+    
+    \item Collaborator is the set of all other classes that a given class has to interact with in order to fulfill a particular responsibility
+\end{itemize}
+
+\subsection{Relationships}
+\subsubsection{Association}
+\begin{itemize}
+    \item Describes a relationship between instances of one class and instances of the same or another class represented as a connection 
+    
+    \item e.g.: Customer \textit{owns} Account, Student \textit{enrolls for} Elective
+    
+    \item Multiplicity denotes the number of instances or objects of one class that can be associated with one instance of another class
+    
+    \item UML notatitions for multiplicity:
+    \begin{itemize}
+        \item 1: one and only one
+        
+        \item 0..1 : 0 or 1
+        
+        \item M..N: between M and N, both inclusive
+        
+        \item 0..* : 0 or more instances
+        
+        \item 1..* : 1 or more instances
+        
+        \item *: Any positive integer
+    \end{itemize}
+    
+    \item An association can have an associated \textbf{navigability} (i.e. direction) that is denoted with an arrow (e.g.: Router $\rightarrow$ DNSServer, here the router sends messages to the DNSServer to access its services, but the DNSServer has no knowledge of the router)
+    
+    \item Association classes are classes that are associated with relationships between 2 already existing classes (e.g.: Registration is associated with the relationship between Product and Warranty)
+
+    \item Association relationships have 2 forms:
+    \begin{itemize}
+        \item \textbf{Aggregation} is a strong association wherein a complex object is made of smaller less complex objects (e.g.: Car is made of Engine, Gearbox, Chassis etc.)
+        
+        \item Aggregation specifies a whole-part relationship between an aggregate (a whole) and a constituent part, where the part can exist independently from the aggregate.
+        
+        \item Aggregations are denoted by a hollow-diamond adornment on the association.
+        
+        \item \textbf{Composition} indicates a strong ownership and coincident lifetime of parts by the whole (i.e., they live and die as a whole)
+        
+        \item The component classes of a composition cannot exist independent of the base class (e.g.: Window is composed of Scrollbar, Title Bar, Menu bar)
+    \end{itemize}
+\end{itemize}
+
+\subsection{Generalization}
+\begin{itemize}
+    \item Represents Inheritance in which a class "gains" all of the attributes and operations of the class it inherits from, and can override/modify some of them, as well as add more attributes and operations of its own
+    
+    \item Inheritance is also called an "Is-A" relationship. (e.g.: Student class inherits from Person class, hence Student is a Person)
+    
+    \item Denoted using the hollow arrow that points from the derived class to the base class (i.e. from Student to Person)
+    
+    \item UML can represent multiple inheritance (one derived class inherits from multiple base classes, e.g. TA inherits from Student, Employee) even though languages like Java don't allow it
+\end{itemize}
+
+\subsection{Dependency}
+\begin{itemize}
+    \item A dependency relationship is a semantic relationship in which one element, the client, uses or depends on one or more other elements, the supplier(s)
+    
+    \item Dependency is displayed as a dashed line with an open arrow that points from the client to the supplier. 
+\end{itemize}
+
+\section{Component Diagram}
+\begin{itemize}
+    \item Components are replaceable and executable pieces of a system whose implementation details are hidden
+    
+    \item Component diagram describes the organization of the physical and conceptual components in a system
+
+    \item A \textbf{Component} is represented as a rectangle with the stereotype (the text "$<<$component$>>$") and the component name below that, as well as the component icon at the top right
+    
+    \item A \textbf{provided interface} is one that is provided (i.e. implemented) by the component itself. It is represented as the lollipop symbol (circle with a line at the end away from the component)
+    
+    \item \textbf{Required Interface} represents an interface that the component requires. It is represented as a line with a half circle at the end
+    
+    \item \textbf{Port} specifies a distinct interaction point or a window into an encapsulated component. (represented as a square on the edge of the component)
+    
+    \item Each port provides or requires one or more specific interfaces. Ports can be named, and the name is placed near the square symbol
+    
+    \item Connectors:
+    \begin{itemize}
+        \item \textbf{Direct Connectors} link 2 components
+        
+        \item An \textbf{assembly connector} links together two ports by relating together the required and the provided interfaces using ball and socket notation
+        
+        \item A \textbf{delegation connector} connects a part within a component to a port of that component, thus providing/consuming services to/from the outside world of the larger component
+    \end{itemize}
+\end{itemize}
+
+\section{Deployment Diagram}
+\begin{itemize}
+    \item Maps software architecture to hardware components that actually execute said software. 
+    
+    \item Shows how the components described in component diagrams are deployed in hardware
+    
+    \item \textbf{Components with artifacts} demonstrate the software modules, along with the real world \textbf{artifacts} (code, libraries, exe files, config, user manuals/documentation) that participate in the execution
+    
+    \item \textbf{Node} is computing hardware upon which component artifacts are deployed for execution
+    
+    \item A \textbf{Deployment specification} is a  configuration file, such as a text file or an XML document. It describes how an artifact is deployed on a node.
+\end{itemize}
+
+\section{Activity Model}
+Refer to \href{https://www.geeksforgeeks.org/unified-modeling-language-uml-activity-diagrams/}{this link}
+
+\section{Sequence Model}
+Refer to \href{https://www.geeksforgeeks.org/unified-modeling-language-uml-sequence-diagrams/}{this link}
+
+\section{State Diagram}
+Refer to \href{https://www.geeksforgeeks.org/unified-modeling-language-uml-state-diagrams/}{this link}
+
+\end{document}

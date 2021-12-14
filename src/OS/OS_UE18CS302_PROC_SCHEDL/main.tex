@@ -1,0 +1,100 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Operating Systems (UE18CS302)}
+\author{Aronya Baksy}
+\date{August 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Process Scheduling}
+\begin{itemize}
+    \item While one process waits for some device or I/O response, the scheduler loads one more process to keep the CPU busy in the meantime. 
+    
+    \item Such an arrangement increases the level of multiprogramming, and keeps the CPU busy at all times, with no idle periods of inefficiency. 
+    
+    \item The success of this arrangement is due to the fact that processes commonly alternate between periods of heavy CPU activity (a \textbf{CPU burst}) and periods of high I/O activity (an \textbf{I/O burst}). 
+    
+    \item The frequency distribution of CPU and I/O bursts (CPU bound progs have few long CPU bursts, I/O bound progs have many short CPU bursts, and vice versa for I/O bursts) is important when choosing an appropriate scheduling algorithm.
+\end{itemize}
+
+\subsection{Preemptive and Non Preemptive Scheduling}
+
+\begin{itemize}
+    \item CPU scheduling takes place in the following four situations:
+    \begin{enumerate}
+        \item Process switching from \textbf{running} to the \textbf{waiting} state, for an I/O or memory access, or invocation of wait() for child process termination. 
+        
+        \item Process switching from \textbf{running} to \textbf{ready}, when an interrupt occurs.
+        
+        \item Process switching from \textbf{waiting} to \textbf{ready} state, for example when an I/O op. completes.
+        
+        \item Process \textbf{terminates}
+    \end{enumerate}
+    
+    \item The situations 1 and 4 come under the purview of \textbf{non-preemptive} or \textbf{cooperative} scheduling. 
+    
+    \item Situations 2 and 3 come under \textbf{preemptive} scheduling. 
+    
+    \item Under non-preemptive scheduling, once a process is allocated the CPU, it takes control of the CPU until it has to wait or it terminates. 
+    
+    \item Preemptive scheduling can lead to race conditions. If one process is preempted while it is writing to some data location, and the new process reads from that location, then that data is an inconsistent state. 
+    
+    \item Preemptive scheduling can also affect kernel design. If a kernel process is preempted while it is changing some kernel data (eg: an I/O queue), then chaos ensues. UNIX family OSes solve this problem by waiting for the entire system call or I/O op to complete before performing the context switching. This is a working solution but is not feasible in real time OSes. 
+    
+    \item The \textbf{dispatcher} gives control of the CPU to the process that is selected by the short term scheduler. This involves a context switch, a switch to user mode, and jumping to the appropriate location in the user program to start execution. 
+    
+    \item Every process switch invokes the dispatcher, and the time taken for the dispatcher to stop one process and start another is called the \textbf{dispatch latency}.
+\end{itemize}
+
+\subsection{Scheduling Criteria}
+\begin{itemize}
+    \item \textbf{CPU Utilization:} The fraction of time the CPU is kept busy. Theoretically can be anywhere from 0 to 100\%, but real world values range from 40\% to 90\%.
+    
+    \item\textbf{Throughput:} Number of processes completed per unit time. 
+    
+    \item \textbf{Turnaround Time:} Interval between process submission and process completion. Turnaround time is the sum of the periods spent waiting to get into memory, waiting in the ready queue, executing on the CPU, and doing I/O.
+    
+    \item \textbf{Waiting Time:} Sum of all time periods spent by process in the wait queue.
+    
+    \item \textbf{Response Time:} Time between process submission and first response. 
+\end{itemize}
+
+\textbf{maximize:} CPU Util, Throughput
+\textbf{minimize:} Turnaround time, wait time, response time
+
+\subsection{Scheduling Algorithms}
+
+\subsubsection{First Come First Serve (FCFS) Scheduling}
+\begin{itemize}
+    \item Processes are added to the ready queue in the order in which they arrive. 
+    
+    \item The average wait times for FCFS depend very heavily on the process mix, and the burst times for each process. A long process arriving behind many short ones can lead to short wait time, but a long process in front of short ones may lead to longer wait times. 
+    
+    \item The effect of a long process in front of many short processes, making the short processes wait for CPU time, is called the \textbf{convoy effect}.
+    
+    \item The FCFS is non preemptive because it allocates CPU time entirely to the new process, and it causes problems in time sharing systems where each user must get CPU time at regular intervals.
+\end{itemize}
+
+\subsubsection{Shortest Job First (SJF) Scheduling}
+\begin{itemize}
+    \item The process with the shortest CPU burst time is selected for CPU time. 
+    
+    \item To predict the length of the next CPU burst, in a long term system the process time limit per user can be used, which is supplied by the user. 
+    
+    \item For a short term scheduling situation, the next CPU burst time is predicted using an exponential average of the previous CPU burst times.
+    
+    \begin{equation}
+        \tau_{n+1} = \alpha t_n + (1-\alpha) \tau_{n}
+    \end{equation}
+    
+    Where $\tau_{i}$ refers to the \textit{predicted} CPU burst value at the time index $i$, and $t_i$ refers to the \textit{actual} CPU burst time at time index $i$.
+    
+    \item The parameter $\alpha$ is chosen to be a constant with value $< 1$, most often a value of 0.5
+    
+    \item The preemptive version of SJF, also called shortest waiting-time first, where the process with the shortest CPU burst time is chosen, and the current process is pre-empted in its place. 
+\end{itemize}
+
+\end{document}

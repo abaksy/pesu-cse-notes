@@ -1,0 +1,706 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, portrait, margin=1in]{geometry}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+\title{Cloud Computing (UE18CS352) \\Unit 2}
+\author{Aronya Baksy}
+\date{February 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\begin{itemize}
+    \item \textbf{Virtualization} is a framework for dividing a single hardware resource (compute or storage) into multiple independent environments.
+    
+    \item This is done by applying concepts such as h/w and s/w partitioning, emulation, etc. 
+    
+    \item A \textbf{virtual machine} (VM) is a complete compute environment with its own processing capability, as well as memory and communication channels. It is an efficient, isolated duplicate of the physical machine, with the ability to run a complete operating system. 
+    
+    \item A \textbf{hypervisor} (also called a \textbf{virtual machine monitor} or VMM) is a software layer that is responsible for creation and management of Virtual machines. 
+\end{itemize}
+
+\subsection{Why Virtual Machines}
+\begin{itemize}
+    \item \textbf{Operating System Diversity}: can run multiple different OS on a single machine 
+    
+    \item \textbf{Rapid provisioning, server consolidation}: Allows for on-demand provisioning of hardware resources
+    
+    \item \textbf{High availability, Load Balancing}: the ability to live-migrate VMs ensures that these 2 aspects of cloud computing are handled
+    
+    \item \textbf{Encapsulation} of a single application's execution environment. 
+\end{itemize}
+
+\subsection{Qualities of a Hypervisor}
+\begin{itemize}
+    \item \textbf{Equivalence}: virtual and real machines should have a similar interface
+    
+    \item \textbf{Safety and isolation}: VMs should be isolated from one other, and also from the underlying physical hardware
+    
+    \item \textbf{Low performance overheads}: Virtual Machine should have similar performance to the physical machine. 
+\end{itemize}
+
+\section{Types of Virtualization}
+\subsection{Type 1 virtualization}
+\begin{itemize}
+    \item Type 1 hypervisors are installed directly on top of a bare metal hardware, and they have direct control over hardware resources. 
+    
+    \item Type 1 hypervisors behave like OSes with only virtualization functionality, and a limited GUI for administrators to configure system properties.
+    
+    \item Type 1 hypervisors offer simpler setup (provided that compliant hardware exists), more scalability, more security and higher performance than type 2 hypervisors.
+    
+    \item e.g.: Xen, Oracle VM (based on Xen), VMWare ESXi server, Microsoft Hyper-V
+\end{itemize}
+
+\subsection{Type 2 virtualization}
+\begin{itemize}
+    \item This type of hypervisor runs within a host OS that runs on top of physical hardware. For this reason type 2 virtualization is also called \textbf{hosted} virtualization. 
+    
+    \item They have interfaces to act as management consoles for all the deployed VMs
+    
+    \item Type 2 hypervisors offer simpler setup than type 1, but less scalability, larger performance overheads and less security than type 1.
+    
+    \item e.g.: VMWare Workstation, Oracle VirtualBox
+\end{itemize}
+
+\subsection{Full Virtualization and Para-Virtualization}
+\subsubsection{Para Virtualization}
+\begin{itemize}
+    \item In para-virtualization, the guest OS is modified in a way such that all privileged instructions in the kernel that are addressed to the hardware, are now replaced by \textbf{hyper calls} to the hypervisor. 
+    
+    \item The Guest OS accesses privileged functions of the hardware through these hyper calls. 
+    
+    \item Para-virtualization improves system performance and reduces overheads of virtualization,  as all privileged instruction calls (which are handled using hyper calls) are all handled at \textit{compile time}, instead of at run time.
+    
+    \item Disadvantage: the need for modifying the guest OS, and the resulting lack of portability across different 
+\end{itemize}
+
+\subsubsection{Full Virtualization}
+\begin{itemize}
+    \item The VMM simulates the hardware at a level that allows any \textit{unmodified} guest OS to run in isolation on top of the host OS. It is also called \textit{transparent virtualization}. 
+    
+    \item Full virtualization is achieved using a combination of \textit{binary translation} and \textit{direct execution}. 
+\end{itemize}
+
+\section{Trap and Emulate Virtualization}
+\begin{itemize}
+    \item Instructions that cannot affect the state of the system (which is typically stored in control registers on the CPU labelled as CR0 to CR4) can be run directly by the hypervisor on the hardware.
+    
+    \item Sensitive instructions that change system state cannot be executed in user mode (ring 3). Such an attempt raises a \textbf{trap}, also called a \textit{general protection fault}. 
+    
+    \item The hypervisor emulates the \textit{effect} of such sensitive instructions so that the guest OS still gets the \textit{impression} that it is running in kernel mode when it is actually not. 
+    
+    \item In trap-and-emulate virtualization, the:
+    \begin{itemize}
+        \item Guest applications run on ring 3
+        
+        \item Guest OS runs on ring 1
+        
+        \item VMM runs on ring 0
+    \end{itemize}
+    
+    \item When a guest app in ring 3 issues a system call, an interrupt is issued to the guest OS in ring 1. 
+    
+    \item The interrupt handler in the guest OS runs the system call routine. When a privileged instruction is encountered as part of this routine, the guest OS kernel issues an interrupt to the VMM. 
+    
+    \item The VMM \textit{emulates} the functionality of that privileged instruction, returns control to the guest OS. 
+    
+    \item Essentially, trap-and-emulate is a method of fooling a guest OS (that is actually running on ring 1) into thinking that it is running in the kernel space on ring 0. 
+\end{itemize}
+
+\subsection{Issues with trap-and-emulate}
+\begin{itemize}
+    \item Some registers in the CPU reflect the actual privilege level. If the guest OS were to read these registers and detect that it is not running in kernel mode it might stop functioning normally. 
+    
+    \item Some instructions that change system state run in both kernel and user space, but with different semantics. This might lead to the guest not trapping to the VMM in case of a privileged instruction being encountered. 
+    
+    \item High performance overheads in processing interrupts. 
+    
+    \item All ISAs do not support trap-and-emulate out of the box Most notably, Intel's x86 ISA did not support trap-and-emulate for a long time. 
+\end{itemize}
+
+\subsection{Issues with x86 virtualization}
+\label{x86}
+\begin{itemize}
+    \item The \texttt{popf} instruction is an example of an instruction that does not work with trap-and-emulate.
+    
+    \item In user mode, \texttt{popf} is used to change the ALU status flags. In kernel mode, \texttt{popf} is used to change system state flags (such as flags related to interrupt delivery).
+    
+    \item In user mode, no interrupt is generated by \texttt{popf} as it changes the system state. Hence even though the instruction is sensitive, it is not privileged as it does not issue a trap. 
+    
+    \item There are 17 such instructions in the x86 ISA. Instructions like \texttt{pushf} reveal to the guest that it is running in user mode, while instructions like \texttt{popf} discussed above do not execute accurately.
+\end{itemize}
+\subsection{Some definitions}
+
+\subsubsection{Privileged}
+\begin{itemize}
+    \item State of the processor is privileged if
+    \begin{itemize}
+        \item Access to that state breaks the virtual machine’s isolation boundaries
+        
+        \item It is needed by the monitor to implement virtualization
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Strictly Virtualizable}
+\begin{itemize}
+    \item A processor or mode of a processor is strictly virtualizable if, when executed in a lesser privileged mode:
+    \begin{itemize}
+        \item All instructions that access privileged state trap
+        
+        \item All instructions either trap or execute identically
+    \end{itemize}
+\end{itemize}
+
+\subsection{Binary Translation}
+\begin{itemize}
+    \item Binary translation is a method of implementing full virtualization. The steps involved in binary translation are:
+    
+    \begin{enumerate}
+        \item The VMM reads the next upcoming \textit{basic block} of instructions. (By basic block we mean a logic block of instructions from the current point till the next branch)
+        
+        \item Each instruction in this basic block is translated to the target ISA, and the result is stored in a translation cache.
+        
+        \item Translation involves 3 types of instructions:
+        \begin{itemize}
+            \item Instructions that can be directly translated and are safe (called \textbf{ident} instructions)
+            
+            \item Short instructions that must be emulated using a sequence of safe instructions (eg: interrupt enable). This is called \textbf{inline} translation
+            
+            \item Other dangerous instructions need to be performed by emulation code in the monitor. These are called \textbf{call-out} instructions. (eg: instructions that changes the PTBR).
+        \end{itemize}
+    \end{enumerate}
+\end{itemize}
+\subsection{Hardware-Assisted Virtualization}
+\begin{itemize}
+    \item The challenges of virtualizing x86 are outlined in section \ref{x86}, and the methods to solve them were adopted as part of Intel's VT-x and AMD's AMD-V feature set 
+    
+    \item The CPU now has 2 modes of operation, a \textbf{root} mode and a \textbf{non-root} mode. 
+    
+    \item Both root and non-root mode have 4 rings. The current hardware state is maintained separately for both modes. 
+    
+    \item The root mode is more powerful than the kernel mode. The host OS and VMM run in root mode, while the guest OS and applications run in non-root mode.
+    
+    \item If any sensitive instructions are executed in non-root mode, a VMEXIT condition signals to the processor to enter root mode. In root mode this sensitive operation is emulated by the VMM and the processor switches back to non-root mode. 
+    
+    \item The hardware state of a VM is maintained in a data structure called the \textbf{Virtual Machine Control Structure} (VMCS). The VMM is in charge of creating the VMCS and modifying it (when emulating sensitive instructions).
+\end{itemize}
+
+\section{Memory and I/O Virtualization}
+\subsection{Memory Virtualization}
+\begin{itemize}
+    \item There are 3 address spaces that have to be translated for a successful memory reference by a guest OS. They are:
+    \begin{enumerate}
+        \item The virtual address space of guest (also called \textbf{guest virtual address} or GVA)
+        
+        \item The physical address space of the guest (also called as the guest RAM or the \textbf{guest physical address} or GPA)
+        
+        \item The \textbf{host physical address} or the HVA
+    \end{enumerate}
+    
+    \item The guest OS page table translates from GVA to GPA.
+    
+    \item The page tables maintained by the VMM translate from GPA to HPA (via the virtual address space of the host also called the HPA). 
+\end{itemize}
+
+\subsubsection{Shadow Page Tables}
+\begin{itemize}
+    \item The VMM creates a mapping from the GVA to the HPA (direct mapping) by combining the information available in the guest OS page table and the host OS page table. 
+    
+    \item This direct mapping is called the shadow page table (SPT). It is offered to the hardware MMU (memory management unit) as a pointer to the base location. The pointer is stored in the control register \texttt{cr3}. 
+    
+    \item While the guest is active, the VMM forces the processor to use the SPT for all translations.
+    
+    \item Whenever the guest OS modifies the guest page table, the VMM must update the shadow page table. This is implemented by making the guest page table \textit{write protected}. 
+    
+    \item This means that whenever the guest OS tries to write to the guest page table, a \textit{page fault} is raised, and a trap is set to the VMM. The VMM handles the trap and modifies the SPT. 
+    
+    \iitem For every guest application there is one shadow page table. Every time a guest application context switches, trap to VMM to change \texttt{cr3} to point to new shadow page table
+    
+    \item The drawbacks of the shadow page table concept is that it leads to overheads involved in handling traps, and the fact that the TLB cache has to be flushed on every context switch. 
+\end{itemize}
+
+\subsubsection{Extended Page Tables}
+\begin{itemize}
+    \item The processor is made aware of the virtualization, and the two-level address translation that is needed to support it. 
+    
+    \item Guest-physical addresses are translated by traversing a set of EPT paging structures to produce physical addresses that are used to access memory.
+    
+    \item A field in the VMCS maintains a pointer to the Extended page table, called the EPT Base Pointer.
+    
+    \item Benefits of EPT:
+    \begin{enumerate}
+        \item Performance increased due to reduced overheads over shadow paging (performance increase is dependent on type of workload)
+        
+        \item Reduced memory footprint compared to SPT scheme that requires maintaining of a table for each VM that is started. 
+    \end{enumerate}
+\end{itemize}
+
+\subsection{I/O Virtualization}
+\begin{itemize}
+    \item It is a technology that uses software to abstract upper-layer protocols from physical connections or physical transports.
+    
+    \item It involves managing and routing I/O requests from multiple virtual I/O devices and the shared physical hardware underneath.
+    
+    \item The three types of I/O virtualization are:
+    \begin{itemize}
+        \item Full Device Emulation
+        
+        \item Para I/O Virtualization
+        
+        \item Direct I/O Virtualization
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Full device emulation}
+\begin{itemize}
+    \item All functions of an I/O device (such as device enumeration and identification, interrrupt handling, DMA manipulation) are emulated entirely in software
+    
+    \item This software is located in the VMM and acts as a virtual device.
+    
+    \item The I/O access requests of the guest OS are trapped to the VMM which interacts with the I/O devices.
+\end{itemize}
+
+\subsubsection{Para I/O Virtualization}
+\begin{itemize}
+    \item This is also called the \textbf{split driver model}. It consists of a front end driver that runs on the guest OS, and a back end driver that runs on the VMM. 
+    
+    \item The front end and back end drivers interact with each other via shared memory.
+    
+    \item The front end driver intercepts I/O requests from the guest OS. The back end driver manages the physical I/O hardware as well as multiplexing the I/O data coming from different VMs
+    
+    \item Performance wise, para I/O virtualization is better than full device virtualization, but it comes with a high CPU overhead.
+\end{itemize}
+
+\subsubsection{Direct I/O Virtualization}
+\begin{itemize}
+    \item Allows a guest to directly access the physical address of an I/O device. Virtual devices can directly perform DMA accesses to/from host memory. 
+    
+    \item Intel VT-x technologies (if enabled) allow for a VM to directly write control information to a device's control registers. The VT-d extension allows for I/O devices to write into the memory that is controlled by VMs.
+    
+    \item The VMM utilizes and configures technologies such as Intel VT-x and Intel VT-d to perform address translation when sending data to and from an IO device.
+    
+    \item Advantage of faster performance, but limited scalability (as a single I/O device can only be assigned to a single VM).
+\end{itemize}
+
+\subsubsection{Advantages of I/O Virtualization}
+\begin{itemize}
+    \item \textbf{Flexibility} due to abstraction of physical protocols, also leads to faster provisioning.
+    
+    \item \textbf{Minimization of costs} as there is now less need for hardware infrastructure like cables/switch ports/network cards. 
+    
+    \item \textbf{Increased practical density} of I/O as it allows more connections to exist in a given space.
+\end{itemize}
+
+\section{Goldberg and Popek Theorems}
+\begin{itemize}
+    \item Fundamental results postulated by R Goldberg and G Popek in 1975 that justify and prove that virtualization is possible to achieve. 
+    
+    \item Goldberg and Popek classified the instructions in an ISA into the following categories:
+    \begin{enumerate}
+        \item \textbf{Behaviour sensitive} instructions are those wherein the final result of the instruction is dependent on the privilege level (i.e. executing that instruction in a lower privilege level leads to a wrong output)
+    
+        \item \textbf{Control sensitive} instructions are those which result in change of processor state or processor privilege. 
+        
+        \item \textbf{Privileged} instructions are those that trap if the processor is in user mode and do not trap if it is in system mode (i.e kernel or supervisor mode).
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Requirements for virtualization support}
+As postulated by Goldberg and Popek, the requirements for an ISA to support virtualization are:
+\begin{itemize}
+    \item \textbf{Equivalence}: A program executing on a VM must display essentially identical behaviour as one executing on an equivalent machine directly.
+    
+    \item \textbf{Resource Control}: A VM must be in total control of the virtualized resources
+    
+    \item \textbf{Efficiency}: A statistically dominant fraction of machine instructions must be executed without VMM intervention.
+\end{itemize}
+
+\subsection{Theorems}
+\subsubsection{Theorem 1}
+"For any conventional third generation computer, a VMM may
+be constructed if the set of sensitive instructions for that computer is a
+subset of the set of privileged instructions"
+
+\begin{itemize}
+    \item The theorem states that to build a VMM it is sufficient that all instructions that could affect the correct functioning of the VMM (sensitive instructions) always trap and pass control to the VMM.
+\end{itemize}
+
+\subsubsection{Theorem 2}
+"A conventional third generation computer is recursively virtualizable if it is:
+\begin{enumerate}
+    \item virtualizable, and
+    
+    \item A VMM without any timing dependencies can be constructed for it.
+\end{enumerate}"
+
+\subsubsection{Theorem 3}
+"A hybrid virtual machine monitor may be constructed for any conventional third generation machine in which the set of user sensitive instructions are a subset of the set of privileged instructions."
+
+\section{Live Migration of VMs}
+\begin{itemize}
+    \item Allows for real-time transfer of VMs from one physical node to another
+    
+    \item The challenge here is the design of a migration strategy that allows for migration but without affecting performance of the cluster of nodes.
+    
+    \item Why migration? Because of \textit{load balancing}. Using the user login frequency and the load index, the most appropriate node for a given VM is chosen, to improve response time and increase resource utilization.
+    
+    \item Live migration is desired when load on the cluster becomes unbalanced and real-time correction is needed. 
+    
+    \item Migration also allows for scalability (up and down) as well as rapid provisioning. 
+\end{itemize}
+
+\subsection{6-step migration process}
+\subsubsection{Step 0 and 1: Migration Start}
+\begin{itemize}
+    \item Determining the source VM and the destination host. 
+    
+    \item This can be started manually by a human user or by an automated load-balancing or server consolidation system.
+\end{itemize}
+
+\subsubsection{Step 2: Iterative pre-copy}
+\begin{itemize}
+    \item Iteratively copy dirty pages from the source to the destination. Memory is copied page wise as it reflects the current execution state of the VM and it is required to continue the same functionality.
+    
+    \item This copy is carried out until the dirty portion of memory is small enough to be copied in a single final round. 
+    
+    \item During the pre-copy phase, the functioning of the source VM is not interrupted. 
+\end{itemize}
+
+\subsubsection{Step 3: Stop and Copy}
+\begin{itemize}
+    \item The source VM is stopped, and the remaining memory state information is copied to the destination VM. 
+    
+    \item During this phase the source VM's functioning is paused. This "downtime" must be made as short as possible. 
+    
+    \item Non-memory state of the source VM such as the CPU state and network state is also sent in this step.
+\end{itemize}
+
+\subsubsection{Step 4 and 5: Commitment and Activation}
+\begin{itemize}
+    \item The VM reloads the states and recovers the execution of programs in it, and the service provided by this VM continues.
+    
+    \item Then the network connection is redirected to the new VM and the dependency to the source host is cleared. 
+    
+    \item The whole migration process finishes by removing the original VM from the source host.
+\end{itemize}
+
+\subsection{Pre-copy and post-copy migration}
+\begin{itemize}
+    \item In \textbf{pre-copy migration}, the aim is not to impact the functioning of the source VM. However since the migration daemon is making use of the network to transfer dirty pages, there is a degradation of performance that occurs.
+    
+    \item Adaptive rate-limited migration is used to mitigate this to an extent. 
+    \item Moreover, the maximum number of iterations must be set because not all applications’ dirty pages are ensured to converge to a small writable working set over multiple rounds.
+    
+    \item In \textbf{post-copy migration}, the migration is initiated by stopping the source VM, a minimal subset of the execution state of the VM is transferred to the target. The VM is then resumed at the target.
+    
+    \item  Concurrently, the source actively pushes the remaining memory pages of the VM to the target - an activity known as pre-paging.
+    
+    \item At the target, if the VM tries to access a page that has not yet been transferred, it generates a page-fault. These page faults are trapped, sent to the source and the source replies with the page requested. 
+\end{itemize}
+
+\section{Lightweight Virtualization}
+\subsection{Containers}
+\begin{itemize}
+    \item Containers are a logical packaging mechanism where the code and all of its dependencies are abstracted away from their run time environment. 
+    
+    \item This allows for much easier deployment on a wide variety of hardware, as well as more effective isolation and much less CPU/Memory overheads.
+    
+    \item Containers are an example of \textit{OS-level virtualization}, and multiple containers running on a host share the same OS. Similar to a VMM for full-scale virtual machines, containers are managed by a container manager. 
+    
+    \item Examples of real world implementation of container technology are Docker, Google's Kubernetes Engine, AWS Fargate, Microsoft Azure etc.
+\end{itemize}
+
+\subsection{Docker}
+\begin{itemize}
+    \item Docker is a product that is used to deliver software in the form of containers, and it makes use of Linux technologies that promote OS-level virtualization such as \textbf{cgroups}, \textbf{namespaces} and others. 
+    
+    \item Docker consists of 3 components:
+    \begin{enumerate}
+        \item The \textbf{Docker engine}
+        
+        \item The \textbf{Docker client} (normally a command line interface which is called the Docker CLI)
+        
+        \item The \textbf{container registry}
+    \end{enumerate}
+    
+    \item The Docker daemon (dockerd) listens for Docker API requests and manages Docker objects such as images, containers, networks, and volumes. A daemon can also communicate with other daemons to manage Docker services.
+    
+    \item The container registry stores Docker images. An example of a publicly-available registry is \textbf{Docker Hub}. By default, the \texttt{docker pull} and \texttt{docker run} commands pull the needed images from Docker Hub. 
+    
+    \item It is possible to configure Docker to look elsewhere for images, including one's own privately set up registry. 
+    
+    \item The \textbf{Docker Engine} is a client-server program. The Docker CLI acts as an client and uses the Docker API to send requests. The engine listens for these requests, and sends them to the Docker daemon running on the server. 
+\end{itemize}
+
+\subsubsection{Docker Images}
+\begin{itemize}
+    \item A Docker image is a read-only template that is used to set up a running container. 
+    
+    \item It provides a convenient way to package up applications and pre-configured server environments, which can be used for private use or to share publicly with other Docker users.
+    
+    \item Each of the files that make up a Docker Image is called a \textit{layer}. Layers are treated by Docker as intermediate images that are built in a specific order (each layer being dependent on the layers below it)
+    
+    \item Layers that change the most often are organized at the top, as then there are minimal number of layers that need to be rebuilt each time a change occurs (when a layer changes only the layers above it must be rebuilt). 
+    
+    \item When a container is launched from an image, a thin writable layer called the \textit{container layer} is added at the top. The container layer stores all the changes made to the container state as it runs. 
+    
+    \item This allows for multiple containers to share the same image layers but only have their distinct container layers at the top. 
+
+    \item A \textbf{Dockerfile} is a plain-text file that specifies the steps involved in creating a Docker image. 
+\end{itemize}
+
+\subsection{Linux namespaces }
+\begin{itemize}
+    \item A namespace is a method of partitioning processes into groups such that different groups see different sets of resources.
+    
+    \item The resources that are partitioned in this way can be the file system, networking, interprocess communication as well as process IDs.
+\end{itemize}
+
+\subsubsection{Mount namespace}
+\begin{itemize}
+    \item Mount namespaces allow a process that lies within a namespace to have a completely different view of the system mount structure from the actual one.
+    
+    \item This promotes isolation as it allows each isolated process to have its own separate file system root, hence it avoids exposing more information about the overall file system than is needed.
+    
+    \item Any mount/unmount operations that are done by the isolated process in its own mount namespace will not affect the parent mount namespace, nor any other isolated mount namespace in the hierarchy. 
+\end{itemize}
+
+\subsubsection{UTS namespace}
+\begin{itemize}
+    \item UTS (UNIX Time-Sharing) namespaces allow a single system to appear to have different host and domain names to different processes. 
+    
+    \item When a process creates a new UTS namespace, the hostname and domain of the new UTS namespace are copied from the corresponding values in the caller's UTS namespace
+\end{itemize}
+
+\subsubsection{Network namespace}
+\begin{itemize}
+    \item Network namespaces allow processes to see entirely different sets of network interfaces. 
+    
+    \item Each network namespace consists of the following objects:
+    \begin{itemize}
+        \item Network devices (labelled as \texttt{veth} or Virtual Ethernet devices)
+        
+        \item Bridge networks
+        
+        \item Routing tables 
+        
+        \item IP Addresses 
+        
+        \item Ports
+    \end{itemize}
+    
+    \item Virtual network interfaces span multiple network namespaces, and allow interfaces in different namespaces to communicate with one another. 
+    
+    \item A routing process takes data incoming at the physical interface, and routes it to the correct network namespace via the virtual network interface
+    
+    \item Routing tables can be set up that route packets between virtual interfaces.
+\end{itemize}
+
+\subsubsection{Linux Control Groups (cgroups)}
+\begin{itemize}
+    \item Developed by Paul Menage, Rohit Seth and others at Google (2006), it is a Linux kernel feature that allows the limiting, accounting and isolation of resources (CPU, memory, disk, I/O, network etc.) for a group of processes.
+    
+    \item Functionality of cgroups is as follows:
+    \begin{itemize}
+        \item Access: which devices can be accessed by a particular cgroup
+        
+        \item Resource limiting 
+        
+        \item Resource prioritization (between cgroups)
+        
+        \item Accounting
+        
+        \item Control: freezing processes and checkpointing
+    \end{itemize}
+\end{itemize}
+
+\subsection{Container File System: UnionFS}
+\begin{itemize}
+    \item The drawbacks of existing file systems w.r.t. containerized services are:
+    \begin{itemize}
+        \item \textbf{Inefficient disk-space utilization}: If 10 instances of a single Docker container (each of size 1 GB) are started, then on a traditional FS totally it takes up 10 GB of memory.
+        
+        \item \textbf{Latency in startup}: Given that a container is essentially a process, the only way for a process to be created is a \texttt{fork()} system call. The inefficiency is because each time a container has to be started, all the image layers have to be copied into the new process address space, which takes time for large number of image layers.
+    \end{itemize}
+    
+    \item UnionFS is a unified and coherent view to files in separate file systems. It allows for multiple file systems to be mounted onto a single root. 
+    
+    \item It allows files and directories of separate file systems, known as branches, to be transparently overlaid, forming a single coherent file system.
+    
+    \item Contents of directories which have the same path within the merged branches will be seen together in a single merged directory, within the new, virtual file system.
+
+    \item This allows a file system to appear as writable, but without actually allowing writes to change the file system, also known as copy-on-write. 
+    
+    \item In the CoW mechanism, any changes that are made to any of the image layers that make up the UnionFS, are reflected only in the topmost container layer. The image layer is \textit{copied} to the container layer FS and changes are written there. 
+    
+    \item Refer to \href{https://medium.com/@paccattam/drooling-over-docker-2-understanding-union-file-systems-2e9bf204177c}{this link}
+\end{itemize}
+
+\subsubsection{Disadvantages}
+\begin{itemize}
+    \item Translating between different file system rules about file names and attributes, as well as different file system's features. 
+    
+    \item Copy-on-write makes memory-mapped file implementation hard
+    
+    \item Not appropriate for working with long-lived data or sharing data between containers, or a container and the host.
+\end{itemize}
+
+\section{DevOps on the cloud}
+\begin{itemize}
+    \item \textbf{DevOps} is an integration of Software Development methodologies and IT operations that are involved in deployment and operation of software. 
+    
+    \item DevOps auomates the process that occur between software development and IT teams so that software can be built, released and tested faster and more reliably. 
+    
+    \item One of the key principles of DevOps is \textbf{Continuous Integration} along with \textbf{Continuous Deployment} and \textbf{Continuous Delivery} (this is commonly referred to as \textbf{CI\textbackslash CD}). 
+    
+    \item CI\textbackslash CD promotes the practice of making small changes and integrating them with the main codebase often, and using automated deployment infrastructure to test on a production-like environment. 
+    
+    \item The entire CI\textbackslash CD sequence of stages is organized in the form of a sequential \textit{pipeline}. The pipeline consists of a series of automated actions that take code from a developer environment to a production environment. 
+    
+    \item Pipelines automate the build, test and publishing of artifacts so that they can be deployed to a runtime environment.
+    
+    \item Tools such as \textbf{Jenkins}, \textbf{Drone}, and Travis CI are used for CI\textbackslash CD pipeline management. 
+    
+    \item A typical CI\textbackslash CD pipeline is as follows:
+    \begin{itemize}
+        \item Developer push their changes to a centralized Git repository
+        
+        \item Build server automatically builds the application and runs unit tests and integration tests on it
+        
+        \item If all tests pass then container image is pushed to the central container repository.
+        
+        \item The newly built container is automatically deployed to a staging environment
+        
+        \item The acceptance tests are carried out in this staging environment. 
+        
+        \item Verified and tested container image is pushed to production environment. 
+    \end{itemize}
+\end{itemize}
+
+\subsection{Continuous Integration (CI)}
+\begin{itemize}
+    \item CI is a development practice wherein developers integrate code into a shared codebase (implemented as a repository) at a high frequency (maybe several times a day). 
+    
+    \item Each integration can then be verified by an automated build and automated tests.
+    
+    \item CI consists of the following workflows:
+    \begin{enumerate}
+        \item Development and unit testing in the developer's local environment
+        
+        \item Compile code on automated build server
+        
+        \item Run additional static analyses, measure and profile performance, generate documentation and facilitate manual QA processes
+        
+        \item Integration with Continuous Delivery (make sure code is always at a deployable state) and Continuous Deployment (automate deployment).
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Continuous Deployment (CD)}
+\begin{itemize}
+    \item Automated deployment of successful builds to the production environment. 
+    
+    \item In an environment in which data-centric microservices provide the functionality, and where the microservices can be multiply instantiated, CD consists of instantiating the new version of a microservice and retiring the old version. 
+\end{itemize}
+
+\subsection{Jenkins}
+\begin{itemize}
+    \item A self-contained, open source automation server which can be used to automate tasks related to building, testing, and delivering or deploying software.
+    
+    \item It can be installed via package managers (\texttt{apt-get}, \texttt{pacman}), DockerHub, or natively built on a machine with Java Runtime Envt (JRE). 
+    
+    \item Plugins are used to extend Jenkins functionality as per the user-specific or organization-specific needs
+    
+    \item Some commonly used Jenkins plugins are:
+    \begin{itemize}
+        \item Dashboard view, view job filters
+        
+        \item Monitoring and metrics 
+        
+        \item Kubernetes plugin
+        
+        \item Build pipeline
+        
+        \item Git and GitHub integration 
+    \end{itemize}
+\end{itemize}
+
+\section{Container Orchestration and Kubernetes}
+\begin{itemize}
+
+    \item The process of deploying containers on a compute cluster consisting of multiple nodes.
+    \item Includes managing container lifecycles in large and dynamic environments (especially in microservice architectures where each microservice is implemented as a container) 
+    
+    \item Orchestrator is a software that virtualizes different physical nodes into a single compute infrastructure for the user to deploy containers on.
+    
+    \item It automates deployment, scaling, management, networking and availability of container-based apps. 
+    
+    \item Scheduling: managing the resources available and assigning workloads where they can most efficiently be run. 
+    
+    \item Cluster management: joining multiple physical or virtual servers into a unified, reliable, fault-tolerant group.
+    
+    \item Typically orchestrators take care of all 3: orchestration, scheduling and cluster mgmt. 
+    
+    \item Kubernetes (or K8s for short) is the most prominent example of such a software. Others are Docker Swarm, Google Container Engine (built on Kubernetes), and Amazon ECS.
+\end{itemize}
+
+\subsection{K8s Architecture}
+
+\subsubsection{K8s Pod}
+\begin{itemize}
+    \item K8s manages applications that consist of communicating microservices
+    
+    \item  Often those microservices are tightly coupled forming a group of containers that would typically, in a non-containerized setup run together on one server.
+    
+    \item This smallest unit that can be scheduled to deploy on K8s is called a \textbf{pod}. 
+    
+    \item The containers in a pod share cgroups, namespaces, storage and IP Addresses as they are co-located. 
+    
+    \item Pods have a short lifetime, they are created, destroyed and restarted on demand. 
+\end{itemize}
+
+\subsubsection{K8s Service}
+\begin{itemize}
+    \item As pods are shortlived, there is no guarantee on their IP Address, which makes communication hard
+    
+    \item  A service is an abstraction on top of a number of pods, typically requiring to run a proxy on top, for other services to communicate with it via a Virtual IP address.
+    
+    \item Numerous pods can be exposed as a service with configured load balancing. 
+\end{itemize}
+
+\subsubsection{Master Node}
+\begin{itemize}
+    \item Consists of an API Server, a key-value store called \texttt{etcd}, scheduler and controller-manager
+    
+    \item The \textbf{API server} serves REST API requests according to the bound business logic. 
+    
+    \item \textbf{\texttt{etcd}} is a consistent and simple key-value store that is used for service discovery and shared config storage. It allows for CRUD operations and notification services to notify the cluster about config changes.
+    
+    \item \textbf{Scheduler} deploys configured pods and services onto the worker nodes. It decides based on the resources available on each cluster. 
+    
+    \item \textbf{Controller-manager} is a daemon that enables the use of various control services. It makes use of the API server to watch the current state and make changes to the config to maintain the desired state (e.g.: maintaining the replication factor by reviving any dead/failed pods) 
+\end{itemize}
+
+\subsubsection{Worker Node}
+\begin{itemize}
+    \item Consists of Docker, \texttt{kubelet}, \texttt{kube-proxy}, and \texttt{kubectl}
+    
+    \item \textbf{Docker} runs the configured pods, takes care of downloading the images and starting the containers.
+    
+    \item \texttt{kubelet} gets the configuration of a pod from the API Server and ensures that the described containers are up and running. It also communicates with \texttt{etcd} to read and write details on running services.
+    
+    \item \texttt{kube-proxy} is a network proxy and load balancer for a single node that routes TCP and UDP traffic 
+    
+    \item \texttt{kubectl} is a command line tool that sends API requests to the API server.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,256 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, portrait, margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{tabularx}
+\usepackage{minted}
+\usepackage{algorithmic}
+
+\title{UE18CS342 \\Heterogeneous Parallelism \\Unit 2}
+\author{Aronya Baksy}
+\date{March 2021}
+
+\begin{document}
+\maketitle
+\section{Superscalar Architectures}
+\begin{itemize}
+    \item Superscalar CPU architectures implement ILP inside a single processor that allows for greater throughput at the same clock rate as a scalar pipelined processor.
+    
+    \item 
+\end{itemize}
+\subsection{Parallel Pipeline}
+\begin{itemize}
+    \item Multiple instruction pipelines that run instructions simultaneously
+    
+    \item Instructions are issued from a sequential stream. The CPU dynamically checks for dependencies between instructions at runtime.
+    
+    \item Multiple instructions can be executed in a single clock cycle, as against a single pipeline that has an upper throughput limit of 1 Instruction per Cycle. 
+\end{itemize}
+
+\subsection{Diversified Pipeline}
+\begin{itemize}
+    \item Within a single pipeline, maintain different functional units that can operate simultaneously
+    
+    \item Each FU is not a separate CPU core, rather an execution resouce within the CPU (such as an ALU, FPU, multiplier, barrel shifter etc.)
+    
+    \item Requires scheduling to maximize the utilization of the Functional Units, as well as to minimize any structural hazards
+\end{itemize}
+
+\subsection{Dynamic Pipelines}
+\begin{itemize}
+    \item Making use of dispatch units and reorder buffers to allow for in-order issue, out of order execution and in-order completion
+    
+    \item This allows the processor to schedule instructions \textit{around} stalls (i.e. If a stall occurs, the processor can schedule other instructions to be executed until the stall is resolved)
+\end{itemize}
+
+\subsection{Approaches to Multithreading}
+\subsubsection{Fine-Grained Multithreading}
+\begin{itemize}
+    \item Switches threads on every clock cycle. One instruction from each thread is executed before context switches to the next thread
+    
+    \item Threads are scheduled in a round-robin manner, skipping over any stalled threads
+    
+    \item \textbf{Advantage}: It can hide both short and long stalls, since instructions from other threads executed when one thread stalls 
+    
+    \item \textbf{Disadvantage}: Slows down the execution of threads that are waiting and can execute without any stalls
+\end{itemize}
+
+\subsubsection{Coarse-Grained Multithreading}
+\begin{itemize}
+    \item Threads switched only on costly stalls, such as L2 cache misses
+    
+    \item \textbf{Advantages}: no need for fast thread-switching, high performance of current thread (as long as it doesn't stall for too long)
+    
+    \item \textbf{Disadvantages}: Short stalls cause high throughput loss due to the time needed to empty the current pipeline and refill it with instructions from the new thread
+\end{itemize}
+
+\subsubsection{Simultaneous Multithreading}
+\begin{itemize}
+    \item  In simultaneous multithreading, instructions from more than one thread can be executed in any given pipeline stage at a time.
+    
+    \item The main architecture changes needed are the ability to fetch instructions from multiple threads in a cycle, and a larger register file to hold data from multiple threads
+    
+    \item The independent state of each thread is duplicated. Thread state involves:
+    \begin{enumerate}
+        \item Program Counter (PC)
+        
+        \item Register file, and mapping between physical and logical registers
+        
+        \item I and D caches
+        
+        \item Branch predictor
+        
+        \item Re-order Buffer
+    \end{enumerate}
+    
+    \item Thread switching hardware allows for faster context switching than processes (100s or at most 1000s of clock cycles for threads)
+\end{itemize}
+
+\subsubsection{Resource Utilization}
+\begin{itemize}
+    \item Superscalar processor has high under-utilization – not enough work every cycle, especially when there is a cache miss
+    
+    \item Fine-grained multithreading can only issue instructions from a single thread in a cycle – can not find max work every cycle, but cache misses can be tolerated
+    
+    \item  Simultaneous multithreading can issue instructions from any thread every cycle – has the highest probability of finding work for every issue slot
+\end{itemize}
+\section{Laws of Parallelism}
+\subsection{Amdahl's Law}
+\begin{itemize}
+    \item "The speedup of a program using multiple processors in parallel is limited by the time needed for the sequential fraction of the program" - Gene Amdahl, 1967
+    
+    \item Mathematically, 
+    
+    \begin{equation}
+        S = \frac{1}{s + \frac{1-s}{P}}
+    \end{equation}
+    
+    where $S$ is the speedup obtained, $s$ is the sequential (serial) fraction of the program (hence $1-s$ is the parallelizable fraction) and $P$ is the number of processing units available to work in parallel.
+    
+    \item As $P \rightarrow \infty$, we have $S \rightarrow \frac{1}{s}$ (the \textbf{maximum theoretical speedup}, which clearly depends only on the serial fraction $s$)
+\end{itemize}
+\subsection{Generalized Amdahl's Law}
+\begin{itemize}
+    \item Let $s$ and $f$ be two parts of a program. We have
+    \begin{equation*}
+        s + f = 1
+    \end{equation*}
+    
+    \item Now, the part $f$ is sped up by $F$ times. As a result of this, the speedup $S$ is calculated as:
+    \begin{align}
+        S &= \frac{s+f}{s + \frac{f}{F}} \\
+        \implies S &= \frac{1}{s + \frac{f}{F}} \\
+        \implies S &= \frac{1}{ (1-f) + \frac{f}{F}}
+    \end{align}
+\end{itemize}
+
+\subsubsection{Takeaway from Amdahl's Law}
+\begin{itemize}
+    \item Make the common case fast; reduce the serialized portion, rather than focus on adding more processing units
+    
+    \item Only for programs where parallel fraction is large, does adding more processors help
+    
+    \item Amdahl's law works only for a fixed problem size (does not scale with larger problems)
+\end{itemize}
+
+\subsection{Gustafson's Law}
+\begin{itemize}
+    \item Scaling the problem size along with the increase of machine size within the same execution time
+    
+    \item The speedup gained from $N$ processors is given as:
+    \begin{equation}
+        S = N + (1-N)s
+    \end{equation}
+    where $S$ is the speedup, $s$ is the serial fraction (i.e. the one that is not affected by increase in resources)
+\end{itemize}
+
+\subsubsection{Takeaway from Gustafson Law}
+\begin{itemize}
+    \item Derived by fixing the parallel execution time (rather than the problem size that is fixed by Amdahl's Law)
+    
+    \item Amdahl's law turns out to be too conservative for high performance computing. 
+    
+    \item For many real world applications, Gustafson's Law makes more sense (If you have more resources you can do more work, LOL)
+\end{itemize}
+
+\section{Drawbacks of both laws}
+\begin{itemize}
+    \item Neither take into account the overhead of synchronization, communication, OS, etc., or the fact that loads may not be equally balanced between processors
+\end{itemize}
+
+\section{Parallel Computing}
+\subsection{Approaches to Parallel Computing}
+\subsubsection{Extend language}
+\begin{itemize}
+    \item Add functionality for creating, terminating and synchronizing processes, as well as IPC mechanisms
+    
+    \item Pros: Easy, quick, least expensive, leverages existing compiler technology, fast delivery of software after new parallel hardware is released
+    
+    \item Cons: Lack of support for bug detection, easy to incorporate bugs that can be hard to catch
+\end{itemize}
+
+
+\subsubsection{Extend compilers}
+\begin{itemize}
+    \item Compilers detect parallelism in sequential programs, and produce a parallelized executable
+    
+    \item Pros: leverage existing sequential code, no reskilling needed for programmers, easier to program sequentially than in parallel
+    
+    \item Cons: Performance of parallelizing compilers on broad range of applications still not very encouraging
+\end{itemize}
+
+\subsection{Multithreaded Programming Model}
+\begin{itemize}
+    \item Programmer explicitly creates multiple threads, uses shared memory for load/store
+    
+    \item Pre-emptive multithreading (part of thread scheduling) is managed by the Operating System
+    
+    \item Use cases: GUI programs, handling I/O latencies, expressing parallelism using TLP 
+\end{itemize}
+
+\subsection{GPGPU Computing}
+\begin{itemize}
+    \item GPUs are specialized processors designed to rapidly manipulate and alter memory to accelerate the creation of images in a frame buffer intended for output to a display device.
+    
+    \item GPUs are mainly optimized for 2D graphics (that involve bit-block transfers), and raster graphics (that are expressed as 2D rectangular arrays of pixels)
+    
+    \item GPUs are examples of throughput-oriented architecture:
+    \begin{itemize}
+        \item Small caches for high memory throughput
+        
+        \item Simple control logic with no forwarding and branch prediction
+        
+        \item Large number of energy efficient ALUs that are heavily pipelined for high throughput
+        
+        \item Require massive number of threads to have latencies in tolerable range
+    \end{itemize}
+    
+    \item Devote more transistors to data processing rather than flow control and caching
+    
+    \item GPUs have fine-grained and lightweight threads, with poor single-thread performance
+\end{itemize}
+
+\subsubsection{CUDA}
+\begin{itemize}
+    \item Compute Unified Device Architecture, an Nvidia proprietary scalable parallel programming model and software environment for parallel programming
+    
+    \item CUDA is the most common platform for General Purpose computing using GPUs. It is exposed to programmers using extensions for C, C++ and Fortran languages.
+    
+    \item Easy integration, high efficiency with mathematical computations (especially matrix-vector computations). Can execute code with high levels of data parallelism, reuse and regularity
+    
+    \item Disadvantages: GPU harder to program (poor compiler support, architecture differences), architecture (especially poor single-thread performance) is a bottleneck for serious GP computing
+\end{itemize}
+
+\subsection{Parallel Programming}
+\begin{itemize}
+    \item Most common approach is thread-level. Programmers launch threads (lightweight sub-units of a process) and each thread performs a sub-task
+    
+    \item The OS takes care of allocating threads to the relevant hardware, and thread scheduling 
+    
+    \item Most thread-based programming uses the \textit{fork/join model}, wherein the program starts with a main thread, then multiple threads are launched (for the parallel execution) and these threads are joined to the main thread once they complete their task
+    
+    \item Threads within a process share code and shared variables, as well as resources (like open files, signals). But each thread has its own PC, register set and stack. 
+    
+    \item When many threads are simultaneously manipulating a single shared variable, there is a chance of inconsistency depending on the sequence in which the variable is manipulated. This is called a \textbf{race condition}
+    
+    \item Synchronization primitives (like mutexes and semaphores) are used to tell the compiler that a shared variable is to be protected from random parallel access. 
+\end{itemize}
+
+\subsection{False Sharing}
+\begin{itemize}
+    \item False Sharing occurs when threads on different processors modify variables that reside in the same cache block 
+    
+    \item It is called false sharing because each thread is actually not sharing access to the same variable
+    
+    \item False sharing does not occur when processor word size and cache block size are equal. It does occur when cache block is larger than processor word size. 
+    
+    \item If one core writes, the cache line holding the memory line is invalidated on other cores. Even though another core may not be using that data (reading or writing), it may be using another element of data on the same cache line. The second core will need to reload the line before it can access its own data again.
+    
+    \item The cache hardware ensures data coherency, but at a potentially high performance cost if false sharing is frequent. 
+    
+    \item Solution is to force the variables into 2 different cache lines, using \textbf{padding}. 
+\end{itemize}
+
+\end{document}
