@@ -50,6 +50,17 @@ $ pdflatex <file path>.tex
 
 You can use [MacTeX](https://tug.org/mactex/) which is simple to install
 
-# On Windows
+## On Windows
 
 I recommend [MiKTeX](https://miktex.org/)
+
+# NOTE: Regarding mistakes
+If you detect any mistakes of any kind in the notes above, kindly do raise a Pull Request. I will review and approve the PR as appropriate. 
+If you are not familiar with how to raise a PR on GitHub, [this](https://opensource.com/article/19/7/create-pull-request-github) will help.
+<br>
+Alternatively you can reach out to me via my personal [E-Mail ID](mailto:abaksy@gmail.com) and give me the following details for the change you want to make:
+- Subject 
+- Unit
+- Section and subsection (and sub-subsection, if applicable)
+- Topic name
+- The change you want to be made
