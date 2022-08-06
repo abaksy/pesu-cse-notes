@@ -1,0 +1,179 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, portrait, margin=0.6in]{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{array}
+
+
+\title{Software Testing (UE18CS400SB) \\ Unit 5}
+\author{Aronya Baksy}
+\date{November 2021}
+
+\begin{document}
+\maketitle
+\section{Testing Tools}
+\subsection{JUnit}
+\begin{itemize}
+    \item An open-source testing framework for Java projects, based off XUnit
+    
+    \item Promotes test-driven development
+    
+    \item The testing code is embedded into the main  Java program and by using the assert  statements, and the programmers knowledge  on the expectant result, we can test each  component of the project
+    
+    \item Annotations identify test methods. Assert statements identify the results
+    
+    \item Tests run automatically, instant feedback, progress reports for test suites
+    
+    \item JUNit terminology:
+    \begin{itemize}
+        \item A \textbf{test case} tests a single method
+        
+        \item A \textbf{unit test} tests all methods in a class
+        
+        \item \textbf{Test suite} combines unit tests
+        
+        \item \textbf{Test fixture} provide support for test cases (envt setup, teardown)
+        
+        \item \textbf{Test runner} runs the test suite/test cases
+        
+        \item \textbf{Test result} summarises the test info of the test suite
+    \end{itemize}
+    
+    \item Disadvantages of JUnit: can't do dependency testing, not suitable for high level testing, can't test multiple JVMs at once
+\end{itemize}
+
+\subsection{JMeter}
+\begin{itemize}
+    \item An open-source GUI application (Apache project) used for load/performance testing of web applications (now supports many types of apps)
+    
+    \item Useful in testing the performance of both static and dynamic resources like files, Servlets, Perl scripts, Java Objects, Data Bases, Queries, FTP Servers and more
+    
+    \item Allows for distributed testing (using multithreaded framework) and supports plugin addition or  removal as per requirements.
+    
+    \item Advantages: open source, GUI tool, load/stress/distributed test, robust reporting, multiple protocol support
+    
+    \item Disadvantages: Limited to web app testing, no JS support, high memory usage, no complex scenarios with JMeter thread group
+\end{itemize}
+
+\subsection{MonkeyTalk}
+\begin{itemize}
+    \item Real and functional interactive tests, smoke tests for Android and iOS apps (available on Linux, MacOS and Win)
+    
+    \item Used to be free and open source before Oracle acquisition
+    
+    \item Generates result in HTML and XML formats, supports JUnit reporting
+    
+    \item MonkeyTalk works	with Emulators,	Simulators, Tethered and Actual Hardware devices
+    
+    \item Provides record and playback, can	be	used	to	validate	controls/images/text	or  any property of an object, provides complete gesture support.
+    
+    \item Supports linked-in libraries and subprojects
+    
+    \item Components of MonkeyTalk:
+    \begin{itemize}
+        \item MonkeyTalk IDE: Eclipse-based IDE, used to record/playback/modify and manage test suites
+        
+        \item MonkeyTalk Agent: A platform specific library injected into the app for the tool to be able to recognize it and test it
+        
+        \item MonkeyTalk Scripts: 3 types (simple, parameterized, data-driven), can be in either JS/MonkeyTalk/Tabular scripting languages
+        
+        \item Advantages: easy to learn, cross platform, supports keyword-driven and data-driven concepts, JUnit reporting, testing of desktop and mobile apps
+        
+        \item Disadvantages: Need to install agent, no support for HTML5 and embedded webpages, hard to test games, bug discovery may take time due to lack of predefined test
+    \end{itemize}
+\end{itemize}
+
+\subsection{Appium}
+\begin{itemize}
+    \item An open source, cross-platform tool for automating native, mobile web and hybrid apps on Android, iOS and Windows desktop
+    
+    \item Appium philosophy:
+    \begin{itemize}
+        \item Shouldn't have to recompile or modify app to test it
+        
+        \item Shouldn't be locked into a specific lang or framework for testing
+        
+        \item Don't reinvent the wheel in terms of API design
+        
+        \item Open source in name and spirit
+    \end{itemize}
+    
+    \item Appium uses client-server architecture. Appium server exposes REST API, that accepts request to start a test session and responds with a session ID
+    
+    \item Desired capabilites are sent in the request (as a JSON object) to identify the parameters for the test (e.g.: test platform iOS, allow Safari popups, etc.)
+    
+    \item Appium server runs the test server. It is written in node.js and available as an NPM package. Appium desktop is a GUI wrapper for the Appium server
+    
+    \item Appium client libraries in multiple languages support the Appium extended WebDriver protocol. 
+    
+    \item Advantage: language agnostic, simple to use, same test base for multiple platforms
+    
+    \item Disadvantage: Slower than Espresso/XCUITests, complex to test cross-platform apps
+\end{itemize}
+\subsection{Robotium}
+\begin{itemize}
+    \item Test framework for native and hybrid Android apps
+    
+    \item Test cases for automating GUI, functional, system, acceptance tests that can run on real device or emulator
+    
+    \item Based on JUnit and can be integrated with build tools like Maven and ANT
+    
+    \item Advantage: easy black-box testing, readable test cases, integrate with Maven, Ant, Gradle and other CI tools, works with APK and source code, IDE plgin available
+    
+    \item Disadvantage: one device, one app, one process at a time, not cross-platform (only for Android)
+\end{itemize}
+
+\subsection{Selenium}
+\begin{itemize}
+    \item A portable testing framework that supports record-playback tools
+    
+    \item 4 components: Selenium IDE, Selenium remote control, WebDriver, Selenium Grid
+    
+    \item Selenium IDE: A GUI extension for Firefox/Chrome browsers that allows for recording, editing and debugging of functional tests
+    
+    \item Selenium WebDriver: used for automating web-based application testing to verify that it performs expectedly, run using test scripts
+    
+    \item Selenium Grid: tool used together with Selenium RC to run  parallel tests across different machines and different browsers all  at the same time
+    
+    \item Advantage: FOSS, multi browser and multi platform support, extensible, run tests in parallel
+    
+    \item Disadvantage: Only for web apps, no built-in object repository, slower, less support for data-drivent testing
+\end{itemize}
+
+\subsection{Selendroid}
+\begin{itemize}
+    \item Selendroid is a test automation framework  which drives off the UI of Android Native and  hybrid applications (apps) and the mobile web.
+    
+    \item Android APK file must exist on the machine,  where the selendroid-standalone server will be started to allow a customized selendroid-server for the app under test (AUT)
+    
+    \item Main selling point over Appium is \textbf{backward compatibility} (Selendroid supports Android API versions 10 onwards)
+    
+    \item Advantage: gesture support, multi-device support, hot plugging, inspector simplifies UI test development
+    
+    \item Disadvantage: need to recompile app for testing, complex for mobile webapps
+\end{itemize}
+
+\subsection{Magneto}
+\begin{itemize}
+    \item Magneto is an open source test automation framework that allows to write smart and powerful tests for Android apps. 
+    
+    \item Magneto is written in Python for Android devices. 
+    
+    \item It utilizes the uiautomator tool via a Python wrapper and pytest as a test framework.
+
+    \item Magneto can be triggered from CLI, IDE and CI tools
+\end{itemize}
+
+\section{Defect Management}
+\begin{itemize}
+    \item  Need a place to track and store all the defects logged during various testing phases and cycles
+    
+    \item Consider basic features like ticket statuses, email notifications, and the overall usability/experience
+
+    \item Scalable, customizable, work with source control tool, Reporting capabilities
+
+\end{itemize}
+\end{document}

@@ -1,0 +1,117 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, portrait, margin=0.6in]{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{array}
+
+
+\title{Software Testing (UE18CS400SB) \\ Unit 3}
+\author{Aronya Baksy}
+\date{November 2021}
+
+\begin{document}
+\maketitle
+\section{Black-Box Testing}
+\begin{itemize}
+    \item Done with only functional knowledge of system, and no knowledge of system internals
+    
+    \item Characteristics:
+    \begin{itemize}
+        \item Done based on requirements. Should address stated and implied requirements
+        
+        \item Encompass the end-user perspective
+        
+        \item Check for valid conditions/inputs
+    \end{itemize}
+    
+    \item Black-box testing methodologies should be chosen so that likelihood of uncovering \textbf{new} defects is \textbf{maximized}
+\end{itemize}
+\subsection{Advantages of Black-Box Testing}
+\begin{itemize}
+    \item Well suited and efficient for large code segments.
+    \item Code access is not required.
+    \item Clearly separates user's perspective from the developer's perspective  through visibly defined roles.
+    \item Large numbers of moderately skilled testers can test the application with no knowledge of system internals
+\end{itemize}
+
+\subsection{Disadvantages of Black-Box Testing}
+\begin{itemize}
+    \item Limited coverage, since only a selected number of test scenarios is  actually performed.
+    \item Inefficient testing, due to the fact that the tester only has limited  knowledge about an application.
+    \item Blind coverage, since the tester cannot target specific code segments or error-prone areas.
+    \item The test cases are difficult to design
+\end{itemize}
+
+\section{Specification-Based Testing}
+\begin{itemize}
+    \item A specification can be anything like a written document, collection of use cases, a set of models or a prototype
+    
+    \item Specification-based testing is applicable at all levels (unit to acceptance test)
+    
+    \item Can be in the form of equivalence partitioning, boundary value analysis, decision tables or state-transitioning
+\end{itemize}
+
+\subsection{Positive and Negative Testing}
+\begin{itemize}
+    \item Positive: check that the product does what it's supposed to do (supply valid input, expect valid output)
+    
+    \item Negative: Check that product does not fail when given unexpected input (supply invalid input, return error message)
+    
+    \item Coverage is well defined in positive testing, and positive testing maps exactly to a specific requirement
+\end{itemize}
+
+\subsection{Boundary Value Analysis}
+\begin{itemize}
+    \item Boundary testing is the process of testing between extreme ends or boundaries between partitions of the input values.
+    
+    \item 5 types of values are chosen: Minimum, Just above the minimum, A nominal value, Just below the maximum, Maximum
+    
+    \item Reasoning: Most defects occur at these boundaries (from a white-box perspective, decision boundaries)
+\end{itemize}
+
+\subsection{Decision-Based Testing}
+\begin{itemize}
+
+    \item A decision table is a black-box test technique that presents combinations of inputs and outputs, where inputs are conditions or cases, and outputs are actions or effects.
+
+    \item Distinct combinations of decision variables in a program lead to  different scenarios
+    
+    \item Each scenario occupies a row in the decision table, and the  row also has expected results
+\end{itemize}
+
+\subsection{Equivalence Partitioning}
+\begin{itemize}
+    \item Equivalence partitioning is a testing technique that divides the input data into partitions of equivalent data from which test cases can be derived.
+    
+    \item Divide infinite input space into partititons. One element from each partition acts as a representative of that partititon
+
+\end{itemize}
+
+\subsection{State Graph Testing}
+\begin{itemize}
+    \item Useful for language processors, compilers, workflow/data modelling
+    
+    \item Design test cases corresponding to each valid state-input combination.
+Design test cases corresponding to the most common invalid combinations  of state-input.
+\end{itemize}
+
+\section{Requirement-Based Testing}
+\begin{itemize}
+    \item Ensures that all requirements are covered
+    
+    \item Review: some implicit requirements are translated to explicit, reqs are prioritized
+\end{itemize}
+\subsection{RTM}
+\begin{itemize}
+    \item Mapping between requirements and test cases for those requirements
+    
+    \item Makes sure customer needs are met, test cases capture the requirements, identify extra/missing features, track change requests
+    
+    \item Without RTM: unknown test coverage, expensive fixes later on in the cycle, hard to plan/track projects
+\end{itemize}
+
+
+\end{document}

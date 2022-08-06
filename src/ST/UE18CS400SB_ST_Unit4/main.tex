@@ -1,0 +1,153 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, portrait, margin=0.6in]{geometry}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{array}
+
+
+\title{Software Testing (UE18CS400SB) \\ Unit 4}
+\author{Aronya Baksy}
+\date{November 2021}
+
+\begin{document}
+\maketitle
+\section{Acceptance Testing}
+\begin{itemize}
+    \item Testing done in accordance with customer specified criteria (mutually agreed)
+    
+    \item Done in the customer environment by customer-specified individuals
+    
+    \item Types of Acceptance testing:
+    \begin{itemize}
+        \item User Acceptance Testing
+        
+        \item Business Acceptance Testing
+        
+        \item Contract Acceptance Testing
+        
+        \item Regulations Acceptance Testing
+        
+        \item Operational Acceptance Testing
+        
+        \item $\alpha$ and $\beta$ testing
+    \end{itemize}
+    
+    \item Approaches to acceptance testing:
+    \begin{itemize}
+        \item \textbf{Design / Architecture based approach}: Full functionality, Cases that fail here may trigger review
+
+        \item \textbf{Business vertical / customized instance}:
+Typically for products / frameworks
+Customized instances are put through testing based on business domain
+
+        \item \textbf{ Deployment focused}: Large applications tested in complex hw or sw environments
+    \end{itemize}
+    
+    \item Criteria for acceptance testing:
+    \begin{itemize}
+        \item SPecifying the business requirements (may be functional or non functional)
+        
+        \item May be process requirements (test coverage, training etc.)
+    \end{itemize}
+    
+    \item Acceptance test cases cover: Critical functionality, End-to-end scenarios. New functionalities – during upgrade, Legal / statutory needs, Functionality to work on a defined corpus
+    
+    \item Acceptance test execution: on site, in the presence of dev engineers, with proper documentation of the execution process
+    
+    \item Challenges: criteria not easy to specify, multiple iterations with multiple cust. representatives needed
+\end{itemize}
+
+\section{Non-Functional Testing}
+\begin{itemize}
+    \item Testing the non-functional attributes (performance, reliability, scalability, load, security, compatibility and others) of the system
+    
+    \item Reasons:
+    \begin{itemize}
+        \item Identify and correct design faults
+        
+        \item Identify limits of the system
+        
+        \item Whether the product can behave gracefully during stress and load conditions
+
+        \item To ensure that the product can work without degrading  for a long duration
+
+        \item To compare with other products and previous versions
+
+        \item To avoid un-intended side effects.
+    \end{itemize}
+    
+    \item When the product has no basic issues and meets the minimum entry criteria, then the non-functional test can start.
+    
+    \item The non-functional testing is stopped when there is enough data to make a judgement. This must be aligned with release schedule
+\end{itemize}
+
+\subsection{Types of Non-Functional Testing}
+\subsubsection{Scalability Test}
+\begin{itemize}
+    \item Ability of a system to handle increasing amounts of  work without unacceptable level of performance  (degradation)
+
+    \item Scalability may be vertical or horizontal
+    
+    \item The test cases will focus on to test the  maximum limits of the features, utilities and  performing some basic operations
+\end{itemize}
+
+\subsubsection{Performance Test}
+\begin{itemize}
+    \item Evaluating response time of product to perform required actions under  stated conditions 
+    
+    \item comparison with different versions of same product and competitive products.
+    
+    \item Test cases focus on getting response time  and throughput  for  different  operations,  under  defined environment and load
+\end{itemize}
+
+\subsubsection{Reliability Test}
+\begin{itemize}
+    \item Evaluate the ability of the product to  perform it's required functions under stated conditions for a  specified period of time or number of iterations
+    
+    \item The test cases will focus on the product failures  when the operations are executed continuously  for a given duration or iterations
+    
+    \item Focus on frequently used operations
+\end{itemize}
+\subsubsection{Stress Test}
+\begin{itemize}
+    \item Evaluate a system beyond the limits of  the specified requirements or environment resources to ensure the product behavior is acceptable.
+    
+    \item Well-designed system shows graceful degradation and safe behaviour
+    
+    \item System should show performance decrease when resource/load ratio reduces, and symmetric increases when load is reduced
+\end{itemize}
+
+\subsubsection{Security Test}
+\begin{itemize}
+    \item Both static and dynamic in nature
+    
+    \item Test tools identify vulnerabilities at  application level (access control, SQL injection, buffer overflow, encryption, API design)
+
+\end{itemize}
+
+\subsubsection{Regression Test}
+\begin{itemize}
+    \item A \textbf{black-box} technique, that ensures that code change does not impact existing functionality
+    
+    \item Types of regression testing:
+    \begin{itemize}
+        \item \textbf{Corrective}: No changes to requirements, reuse existing test cases
+        
+        \item \textbf{Retest-all}: Re-doing all tests again, not advisable for minor changes
+        
+        \item \textbf{Selective}: Using a subset of the test cases, analyze impact of new code on existing code
+        
+        \item \textbf{Progressive}: When change in spec, new test cases, ensures that new features do not break existing ones
+        
+        \item \textbf{Complete}: Used for major changes in code. 
+        
+        \item \textbf{Partial}: Tests issues when new code is added to already existing code, ensures that a system continues to work after adding new code
+        
+        \item \textbf{Unit}: focus on a single unit, block all dependencies
+
+    \end{itemize}
+\end{itemize}
+\end{document}
